@@ -1,0 +1,157 @@
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBooksCentral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>EBooksCentral</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#ebooks">eBooks</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="home">
+        <h2>Welcome to EBooksCentral</h2>
+        <p>Find the best eBooks here!</p>
+    </section>
+    <section id="ebooks">
+        <h2>eBooks</h2>
+        <div class="ebook-list">
+            <!-- eBook items will be added here -->
+        </div>
+    </section>
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <form id="contact-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+            <button type="submit">Send</button>
+        </form>
+    </section>
+    <footer>
+        <p>&copy; 2024 EBooksCentral. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
+script.js
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em 0;
+    text-align: center;
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+nav ul li {
+    display: inline;
+    margin: 0 1em;
+}
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+section {
+    padding: 2em;
+    margin: 1em 0;
+    background-color: #fff;
+    border-radius: 8px;
+}
+.ebook-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+.ebook-item {
+    flex: 1 1 300px;
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+.ebook-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+.ebook-item button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.ebook-item button:hover {
+    background-color: #555;
+}
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const ebooks = [
+        {
+            title: 'eBook 1',
+            image: 'path_to_image1.jpg',
+            description: 'Description of eBook 1',
+            price: '$10'
+        },
+        {
+            title: 'eBook 2',
+            image: 'path_to_image2.jpg',
+            description: 'Description of eBook 2',
+            price: '$12'
+        },
+        // Add more eBooks as needed
+    ];
+
+    const ebookList = document.querySelector('.ebook-list');
+
+    ebooks.forEach(ebook => {
+        const ebookItem = document.createElement('div');
+        ebookItem.classList.add('ebook-item');
+
+        ebookItem.innerHTML = `
+            <h3>${ebook.title}</h3>
+            <img src="${ebook.image}" alt="${ebook.title}">
+            <p>${ebook.description}</p>
+            <p><strong>${ebook.price}</strong></p>
+            <button>Buy Now</button>
+        `;
+
+        ebookList.appendChild(ebookItem);
+    });
+});
+
+document.getElementById('contact-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Thank you for your message. We will get back to you shortly.');
+});
