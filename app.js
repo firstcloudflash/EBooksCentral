@@ -1,132 +1,561 @@
+/* ==================================================
+   WARD EXPERIENCES™
+   Clinical Archive Engine v3
+================================================== */
+
 /* =========================
-   WARD EXPERIENCES™ ENGINE
-   app.js v2
+   GLOBAL STATE
 ========================= */
 
-let data = [];
-let unlockLimit = parseInt(localStorage.getItem("unlockLimit")) || 1;
-let reads = parseInt(localStorage.getItem("reads")) || 0;
-let deviceID = localStorage.getItem("deviceID");
+let cardsData = [];
 
-// -------------------------
-// DEVICE ID GENERATION
-// -------------------------
+let unlockLimit =
+  StorageEngine.getUnlockLimit();
+
+let reads =
+  StorageEngine.getReads();
+
+let deviceID =
+  StorageEngine.getDeviceID();
+
+let accessPlan =
+  StorageEngine.getAccessPlan();
+
+/* =========================
+   INITIALIZE SYSTEM
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  initializeDevice();
+
+  updateStatusBar();
+
+  loadContent();
+
+  attachTracking();
+
+});
+
+/* =========================
+   DEVICE INITIALIZATION
+========================= */
+
+function initializeDevice() {
+
+  if (!deviceID) {
+
+    deviceID =
+      generateDeviceID();
+
+    StorageEngine.setDeviceID(deviceID);
+
+  }
+
+  const deviceBox =
+    document.getElementById("deviceIDBox");
+
+  if (deviceBox) {
+
+    deviceBox.innerText = deviceID;
+
+  }
+
+}
+
+/* =========================
+   GENERATE DEVICE ID
+========================= */
+
 function generateDeviceID() {
-  let id = "WARD-" + Math.random().toString(36).substring(2, 10).toUpperCase();
-  localStorage.setItem("deviceID", id);
-  return id;
+
+  const random =
+    Math.random()
+      .toString(36)
+      .substring(2, 10)
+      .toUpperCase();
+
+  return `WARD-${random}`;
+
 }
 
-if (!deviceID) {
-  deviceID = generateDeviceID();
-}
+/* =========================
+   LOAD CONTENT
+========================= */
 
-// Display device ID
-window.onload = function () {
-  document.getElementById("deviceIDBox").innerText = deviceID;
-  renderCards();
-  updateLockState();
-};
+async function loadContent() {
 
-// -------------------------
-// LOAD CONTENT
-// -------------------------
-fetch("content.json")
-  .then(res => res.json())
-  .then(json => {
-    data = json.cards;
+  try {
+
+    const response =
+      await fetch("content.json");
+
+    const json =
+      await response.json();
+
+    cardsData = json.cards || [];
+
     renderCards();
-    updateLockState();
-  });
 
-// -------------------------
-// RENDER CARDS
-// -------------------------
+    updateProgress();
+
+    updateLockState();
+
+  } catch (error) {
+
+    console.error(
+      "Failed to load content:",
+      error
+    );
+
+  }
+
+}
+
+/* =========================
+   RENDER FLASHCARDS
+========================= */
+
 function renderCards() {
-  let container = document.getElementById("card-container");
+
+  const container =
+    document.getElementById("card-container");
+
+  if (!container) return;
+
   container.innerHTML = "";
 
-  data.forEach((card, index) => {
+  cardsData.forEach((card, index) => {
 
-    let isLocked = index >= unlockLimit;
+    const isLocked =
+      index >= unlockLimit;
 
-    let div = document.createElement("div");
-    div.className = "card " + (isLocked ? "locked" : "");
+    const div =
+      document.createElement("div");
+
+    div.className =
+      `card ${isLocked ? "locked" : ""}`;
+
+    const lessonsHTML =
+      card.content.clinical_lessons
+        .map(
+          lesson =>
+            `<li>${lesson}</li>`
+        )
+        .join("");
 
     div.innerHTML = `
+
+      <div class="card-top">
+
+        <div class="card-badge">
+          ${card.ward}
+        </div>
+
+        <div class="card-time">
+          ${card.time}
+        </div>
+
+      </div>
+
       <h2>${card.title}</h2>
+
       <h4>${card.subtitle}</h4>
-      <p>${isLocked ? "🔒 Locked Clinical Experience" : card.content}</p>
+
+      ${
+        isLocked
+          ? `
+          <div class="locked-content">
+            🔒 Restricted Clinical Experience
+          </div>
+        `
+          : `
+          <div class="story-block">
+            <p>${card.content.story}</p>
+          </div>
+
+          <div class="lesson-block">
+
+            <h5>Clinical Lessons</h5>
+
+            <ul>
+              ${lessonsHTML}
+            </ul>
+
+          </div>
+
+          <div class="psych-block">
+
+            <h5>Psychological Insight</h5>
+
+            <p>
+              ${card.content.psychological_insight}
+            </p>
+
+          </div>
+        `
+      }
+
     `;
 
-    container.appendChild(div);
-  });
-}
+    div.addEventListener("click", () => {
 
-// -------------------------
-// READ TRACKING SYSTEM
-// -------------------------
-function trackRead() {
-  reads += 1;
-  localStorage.setItem("reads", reads);
+      if (!isLocked) {
 
-  // Progressive unlocking pressure
-  if (reads % 3 === 0) {
-    document.getElementById("status").innerText =
-      "⚠️ Access pressure increasing. Unlock required for continuation.";
-  }
-}
+        StorageEngine.setLastCard(card.id);
 
-// call tracking whenever user scrolls or interacts
-document.addEventListener("scroll", trackRead);
-
-// -------------------------
-// CODE VALIDATION ENGINE
-// -------------------------
-function unlockContent() {
-  let input = document.getElementById("codeInput").value;
-
-  fetch("codes.json")
-    .then(res => res.json())
-    .then(dataCodes => {
-
-      let match = dataCodes.codes.find(c => c.code === input);
-
-      if (match) {
-
-        unlockLimit = match.unlockCardsUntil;
-        localStorage.setItem("unlockLimit", unlockLimit);
-
-        document.getElementById("status").innerText =
-          "✅ Access granted. Archive partially unlocked.";
-
-        renderCards();
-        updateLockState();
-
-      } else {
-        document.getElementById("status").innerText =
-          "❌ Invalid code. Access denied.";
       }
+
     });
+
+    container.appendChild(div);
+
+  });
+
 }
 
-// -------------------------
-// LOCK STATE CONTROL
-// -------------------------
+/* =========================
+   UNLOCK SYSTEM
+========================= */
+
+async function unlockContent() {
+
+  const input =
+    document
+      .getElementById("codeInput")
+      .value
+      .trim()
+      .toUpperCase();
+
+  const status =
+    document.getElementById("status");
+
+  if (!input) {
+
+    status.innerText =
+      "⚠️ Enter a Gatekeeper Code.";
+
+    return;
+
+  }
+
+  try {
+
+    const response =
+      await fetch("codes.json");
+
+    const data =
+      await response.json();
+
+    const match =
+      data.codes.find(
+        code =>
+          code.code === input &&
+          code.status === "active"
+      );
+
+    if (match) {
+
+      unlockLimit =
+        match.unlockCardsUntil;
+
+      accessPlan =
+        match.plan;
+
+      StorageEngine.setUnlockLimit(
+        unlockLimit
+      );
+
+      StorageEngine.setAccessPlan(
+        accessPlan
+      );
+
+      StorageEngine.setActiveCode(
+        match.code
+      );
+
+      StorageEngine.setExpiration(
+        match.expires
+      );
+
+      status.innerText =
+        `✅ ${match.plan} Activated`;
+
+      status.style.color =
+        "var(--success)";
+
+      renderCards();
+
+      updateProgress();
+
+      updateStatusBar();
+
+      updateLockState();
+
+    } else {
+
+      status.innerText =
+        "❌ Invalid or inactive code.";
+
+      status.style.color =
+        "var(--danger)";
+
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.innerText =
+      "⚠️ Unable to validate access code.";
+
+  }
+
+}
+
+/* =========================
+   UPDATE STATUS BAR
+========================= */
+
+function updateStatusBar() {
+
+  const unlockCount =
+    document.getElementById(
+      "unlockCount"
+    );
+
+  const readCount =
+    document.getElementById(
+      "readCount"
+    );
+
+  const planLabel =
+    document.getElementById(
+      "planLabel"
+    );
+
+  if (unlockCount) {
+
+    unlockCount.innerText =
+      unlockLimit;
+
+  }
+
+  if (readCount) {
+
+    readCount.innerText =
+      reads;
+
+  }
+
+  if (planLabel) {
+
+    planLabel.innerText =
+      accessPlan;
+
+  }
+
+}
+
+/* =========================
+   PROGRESS SYSTEM
+========================= */
+
+function updateProgress() {
+
+  const progressFill =
+    document.getElementById(
+      "progressFill"
+    );
+
+  const progressPercent =
+    document.getElementById(
+      "progressPercent"
+    );
+
+  if (!cardsData.length) return;
+
+  const percent =
+    Math.min(
+      Math.floor(
+        (unlockLimit /
+          cardsData.length) *
+          100
+      ),
+      100
+    );
+
+  if (progressFill) {
+
+    progressFill.style.width =
+      `${percent}%`;
+
+  }
+
+  if (progressPercent) {
+
+    progressPercent.innerText =
+      `${percent}%`;
+
+  }
+
+}
+
+/* =========================
+   LOCK OVERLAY CONTROL
+========================= */
+
 function updateLockState() {
-  let overlay = document.getElementById("lockOverlay");
+
+  const overlay =
+    document.getElementById(
+      "lockOverlay"
+    );
+
+  if (!overlay) return;
 
   if (unlockLimit <= 1) {
-    overlay.style.display = "flex";
+
+    overlay.style.display =
+      "flex";
+
   } else {
-    overlay.style.display = "none";
+
+    overlay.style.display =
+      "none";
+
   }
+
 }
 
-// -------------------------
-// DEVICE ID COPY
-// -------------------------
+/* =========================
+   COPY DEVICE ID
+========================= */
+
 function copyDeviceID() {
-  navigator.clipboard.writeText(deviceID);
-  alert("Device ID copied");
+
+  navigator.clipboard
+    .writeText(deviceID)
+    .then(() => {
+
+      alert(
+        "Device Identity copied"
+      );
+
+    });
+
 }
+
+/* =========================
+   READ TRACKING
+========================= */
+
+function attachTracking() {
+
+  let ticking = false;
+
+  window.addEventListener(
+    "scroll",
+    () => {
+
+      if (!ticking) {
+
+        window.requestAnimationFrame(
+          () => {
+
+            trackRead();
+
+            ticking = false;
+
+          }
+        );
+
+        ticking = true;
+
+      }
+
+    }
+  );
+
+}
+
+/* =========================
+   TRACK READS
+========================= */
+
+function trackRead() {
+
+  reads++;
+
+  StorageEngine.incrementReads();
+
+  updateStatusBar();
+
+  behavioralPressure();
+
+}
+
+/* =========================
+   BEHAVIORAL MONETIZATION
+========================= */
+
+function behavioralPressure() {
+
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+  if (!status) return;
+
+  if (reads === 5) {
+
+    status.innerText =
+      "🔒 Additional clinical archives require premium access.";
+
+  }
+
+  if (reads === 10) {
+
+    status.innerText =
+      "⚠️ Archive restriction intensifying.";
+
+  }
+
+  if (reads === 15) {
+
+    status.innerText =
+      "🧠 Unlock deeper psychological clinical experiences.";
+
+  }
+
+}
+
+/* =========================
+   AUTO SESSION CHECK
+========================= */
+
+(function sessionCheck() {
+
+  const expiration =
+    StorageEngine.getExpiration();
+
+  if (!expiration) return;
+
+  const today =
+    new Date();
+
+  const expiry =
+    new Date(expiration);
+
+  if (today > expiry) {
+
+    StorageEngine.lockSystem();
+
+    unlockLimit = 1;
+
+    accessPlan = "Expired";
+
+  }
+
+})();
