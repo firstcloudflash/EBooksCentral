@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "project": "Ward Experiences™",
+    "version": "1.0",
+    "description": "Gatekeeper access code database for clinical archive unlock system",
+    "updated": "2026-05-17"
+  },
+
+  "codes": [
+    {
+      "id": 1,
+      "code": "WARD-BASIC-001",
+      "type": "basic",
+      "plan": "Starter Access",
+      "unlockCardsUntil": 3,
+      "maxDevices": 1,
+      "status": "active",
+      "expires": "2027-01-01",
+      "notes": "Unlocks first 3 ward experiences"
+    },
+
+    {
+      "id": 2,
+      "code": "CLINICAL-ARCHIVE-777",
+      "type": "premium",
+      "plan": "Clinical Archive Pack",
+      "unlockCardsUntil": 10,
+      "maxDevices": 2,
+      "status": "active",
+      "expires": "2027-01-01",
+      "notes": "Unlocks extended archive collection"
+    },
+
+    {
+      "id": 3,
+      "code": "SURGICAL-VAULT-999",
+      "type": "elite",
+      "plan": "Elite Surgical Access",
+      "unlockCardsUntil": 50,
+      "maxDevices": 3,
+      "status": "active",
+      "expires": "2027-01-01",
+      "notes": "Full current archive access"
+    },
+
+    {
+      "id": 4,
+      "code": "EMERGENCY-NIGHT-404",
+      "type": "limited",
+      "plan": "Emergency Cases Pack",
+      "unlockCardsUntil": 15,
+      "maxDevices": 1,
+      "status": "active",
+      "expires": "2026-12-31",
+      "notes": "Emergency and night duty experiences"
+    },
+
+    {
+      "id": 5,
+      "code": "PSYCH-WARD-222",
+      "type": "special",
+      "plan": "Psychological Experiences Series",
+      "unlockCardsUntil": 20,
+      "maxDevices": 1,
+      "status": "active",
+      "expires": "2026-12-31",
+      "notes": "Unlocks psychology-focused clinical stories"
+    }
+  ]
+}
