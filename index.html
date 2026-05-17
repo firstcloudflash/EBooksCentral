@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Ward Experiences™</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <h1>WARD EXPERIENCES™</h1>
+      <p class="sub">Clinical Memory Archive • Medical Reality Cards</p>
+    </header>
+
+    <!-- DEVICE ID SECTION -->
+    <section class="device-box">
+      <h3>Your Device Identity</h3>
+      <p class="small">Use this ID for payment verification</p>
+
+      <div class="device-id" id="deviceIDBox"></div>
+
+      <button onclick="copyDeviceID()">Copy Device ID</button>
+    </section>
+
+    <!-- PAYMENT SECTION -->
+    <section class="payment-box">
+      <h3>Access Payment</h3>
+
+      <div class="bank-info">
+        <p><b>Bank:</b> Smartcash</p>
+        <p><b>Account Name:</b> Abubakar Haruna</p>
+        <p><b>Account Number:</b> 8122382332</p>
+      </div>
+
+      <div class="instructions">
+        <h4>After Payment</h4>
+        <ol>
+          <li>Take screenshot of payment</li>
+          <li>Send to WhatsApp support</li>
+          <li>Include your Device ID</li>
+          <li>Receive unlock code within 5–30 mins</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CODE UNLOCK SECTION -->
+    <section class="unlock-box">
+      <h3>Enter Gatekeeper Code</h3>
+
+      <input type="text" id="codeInput" placeholder="Enter access code...">
+      <button onclick="unlockContent()">Unlock Archive</button>
+
+      <p id="status"></p>
+    </section>
+
+    <!-- FLASHCARDS -->
+    <main id="card-container"></main>
+
+    <!-- LOCK OVERLAY -->
+    <div id="lockOverlay" class="lock-overlay">
+      <div class="lock-box">
+        <h2>🔒 Archive Locked</h2>
+        <p>Enter valid access code to continue reading clinical experiences.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>
