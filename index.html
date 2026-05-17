@@ -2,75 +2,255 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Ward Experiences™</title>
+
+  <!-- MAIN CSS -->
   <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
+  <!-- =========================
+       MAIN APPLICATION
+  ========================== -->
   <div class="app">
 
-    <!-- HEADER -->
+    <!-- =========================
+         HEADER
+    ========================== -->
     <header class="header">
+
+      <div class="header-top">
+        <span class="badge">Clinical Archive</span>
+      </div>
+
       <h1>WARD EXPERIENCES™</h1>
-      <p class="sub">Clinical Memory Archive • Medical Reality Cards</p>
+
+      <p class="sub">
+        Real Clinical Encounters • Psychological Imprints • Medical Reality Flashcards
+      </p>
+
     </header>
 
-    <!-- DEVICE ID SECTION -->
+    <!-- =========================
+         ACCESS STATUS BAR
+    ========================== -->
+    <section class="status-bar">
+
+      <div class="status-item">
+        <span class="label">Access Plan</span>
+        <span id="planLabel">Free Access</span>
+      </div>
+
+      <div class="status-item">
+        <span class="label">Unlocked Wards</span>
+        <span id="unlockCount">1</span>
+      </div>
+
+      <div class="status-item">
+        <span class="label">Reads</span>
+        <span id="readCount">0</span>
+      </div>
+
+    </section>
+
+    <!-- =========================
+         DEVICE IDENTITY
+    ========================== -->
     <section class="device-box">
-      <h3>Your Device Identity</h3>
-      <p class="small">Use this ID for payment verification</p>
 
-      <div class="device-id" id="deviceIDBox"></div>
+      <div class="section-title-wrap">
+        <h3>Device Identity</h3>
+        <p class="section-sub">
+          Required for payment verification and archive access validation
+        </p>
+      </div>
 
-      <button onclick="copyDeviceID()">Copy Device ID</button>
+      <div class="device-id-wrap">
+
+        <div class="device-id" id="deviceIDBox">
+          Loading Device Identity...
+        </div>
+
+        <button onclick="copyDeviceID()">
+          Copy Device ID
+        </button>
+
+      </div>
+
     </section>
 
-    <!-- PAYMENT SECTION -->
+    <!-- =========================
+         PAYMENT SECTION
+    ========================== -->
     <section class="payment-box">
-      <h3>Access Payment</h3>
 
-      <div class="bank-info">
-        <p><b>Bank:</b> Smartcash</p>
-        <p><b>Account Name:</b> Abubakar Haruna</p>
-        <p><b>Account Number:</b> 8122382332</p>
+      <div class="section-title-wrap">
+        <h3>Archive Access Payment</h3>
+        <p class="section-sub">
+          Complete payment and submit verification through WhatsApp support
+        </p>
       </div>
 
-      <div class="instructions">
-        <h4>After Payment</h4>
+      <div class="bank-card">
+
+        <div class="bank-line">
+          <span class="bank-label">Bank</span>
+          <span class="bank-value">Smartcash</span>
+        </div>
+
+        <div class="bank-line">
+          <span class="bank-label">Account Name</span>
+          <span class="bank-value">Abubakar Haruna</span>
+        </div>
+
+        <div class="bank-line">
+          <span class="bank-label">Account Number</span>
+          <span class="bank-value">8122382332</span>
+        </div>
+
+      </div>
+
+      <div class="instruction-box">
+
+        <h4>Verification Flow</h4>
+
         <ol>
-          <li>Take screenshot of payment</li>
-          <li>Send to WhatsApp support</li>
-          <li>Include your Device ID</li>
-          <li>Receive unlock code within 5–30 mins</li>
+          <li>Complete payment transfer</li>
+          <li>Take screenshot of transaction</li>
+          <li>Copy your Device Identity</li>
+          <li>Send both to WhatsApp support</li>
+          <li>Receive Gatekeeper Access Code</li>
         </ol>
+
       </div>
+
     </section>
 
-    <!-- CODE UNLOCK SECTION -->
+    <!-- =========================
+         GATEKEEPER ACCESS
+    ========================== -->
     <section class="unlock-box">
-      <h3>Enter Gatekeeper Code</h3>
 
-      <input type="text" id="codeInput" placeholder="Enter access code...">
-      <button onclick="unlockContent()">Unlock Archive</button>
+      <div class="unlock-header">
 
-      <p id="status"></p>
+        <h3>Gatekeeper Access</h3>
+
+        <p class="unlock-sub">
+          Enter authorized archive code to continue reading restricted clinical experiences
+        </p>
+
+      </div>
+
+      <div class="unlock-input-group">
+
+        <input
+          type="text"
+          id="codeInput"
+          class="unlock-input"
+          placeholder="WARD-XXXX-XXXX"
+          autocomplete="off"
+          spellcheck="false"
+        >
+
+        <button
+          class="unlock-btn"
+          onclick="unlockContent()"
+        >
+          Unlock Archive
+        </button>
+
+      </div>
+
+      <div class="unlock-status-wrap">
+        <p id="status">Awaiting Gatekeeper Code...</p>
+      </div>
+
     </section>
 
-    <!-- FLASHCARDS -->
-    <main id="card-container"></main>
+    <!-- =========================
+         READING PROGRESS
+    ========================== -->
+    <section class="progress-section">
 
-    <!-- LOCK OVERLAY -->
-    <div id="lockOverlay" class="lock-overlay">
-      <div class="lock-box">
-        <h2>🔒 Archive Locked</h2>
-        <p>Enter valid access code to continue reading clinical experiences.</p>
+      <div class="progress-header">
+
+        <h3>Clinical Archive Progress</h3>
+
+        <span id="progressPercent">0%</span>
+
       </div>
+
+      <div class="progress-bar-wrap">
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =========================
+         FLASHCARD CONTAINER
+    ========================== -->
+    <main id="card-container">
+
+      <!-- Cards injected via app.js -->
+
+    </main>
+
+    <!-- =========================
+         LOCKED OVERLAY
+    ========================== -->
+    <div id="lockOverlay" class="lock-overlay">
+
+      <div class="lock-box">
+
+        <div class="lock-icon">
+          🔒
+        </div>
+
+        <h2>Restricted Clinical Archive</h2>
+
+        <p>
+          Additional ward experiences require authorized Gatekeeper access.
+        </p>
+
+        <div class="lock-meta">
+          Psychological Clinical Memory System • Protected Access Layer
+        </div>
+
+      </div>
+
     </div>
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+    <footer class="footer">
+
+      <p>
+        WARD EXPERIENCES™ • Clinical Memory Archive System
+      </p>
+
+    </footer>
 
   </div>
 
+  <!-- =========================
+       STORAGE ENGINE
+  ========================== -->
+  <script src="storage.js"></script>
+
+  <!-- =========================
+       MAIN ENGINE
+  ========================== -->
   <script src="app.js"></script>
 
 </body>
