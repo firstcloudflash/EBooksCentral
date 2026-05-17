@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "project": "Ward Experiences™",
+    "version": "1.0",
+    "type": "Clinical Memory Archive System",
+    "description": "Structured medical training experience flashcards with monetized access layers"
+  },
+
+  "cards": [
+    {
+      "id": 1,
+      "title": "WARD EXPERIENCE #001",
+      "subtitle": "The First Patient I Ever Touched",
+      "ward": "Female Medical Ward",
+      "time": "7:12 AM",
+      "accessTier": "free",
+      "content": {
+        "story": "The gloves felt thinner than I expected... (FULL TEXT HERE)",
+        "clinical_lessons": [
+          "Anxiety affects practical accuracy",
+          "Patients observe confidence closely",
+          "Gentle pressure improves pulse assessment",
+          "Calm correction from seniors matters"
+        ],
+        "psychological_insight": "Fear of harming patients is normal. Confidence develops through repetition, not imagination."
+      }
+    },
+
+    {
+      "id": 2,
+      "title": "WARD EXPERIENCE #002",
+      "subtitle": "The Silence After Ward Round",
+      "ward": "Male Ward",
+      "time": "10:48 AM",
+      "accessTier": "locked",
+      "content": {
+        "story": "Before consultants arrived, the ward felt alive... (FULL TEXT HERE)",
+        "clinical_lessons": [
+          "Ward rounds test thinking under pressure",
+          "Preparation reduces visible anxiety",
+          "Observation skills matter as much as memorization",
+          "Senior nurses often prevent avoidable mistakes"
+        ],
+        "psychological_insight": "Clinical confidence is not loudness. It is calm accuracy."
+      }
+    },
+
+    {
+      "id": 3,
+      "title": "WARD EXPERIENCE #003",
+      "subtitle": "The Day I Forgot Infection Control",
+      "ward": "Surgical Ward",
+      "time": "9:34 AM",
+      "accessTier": "locked",
+      "content": {
+        "story": "It happened fast. Too fast... (FULL TEXT HERE)",
+        "clinical_lessons": [
+          "Small lapses can create contamination risks",
+          "Clinical environments require constant awareness",
+          "Immediate correction prevents escalation",
+          "Discipline protects patients"
+        ],
+        "psychological_insight": "Embarrassment in training is temporary. Unsafe habits are not."
+      }
+    }
+  ]
+}
