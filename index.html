@@ -3,12 +3,26 @@
 
 <head>
 
+  <!-- =========================
+       META
+  ========================== -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ward Experiences™</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <!-- MAIN CSS -->
+  <meta
+    name="theme-color"
+    content="#090b10"
+  >
+
+  <title>WARD EXPERIENCES™</title>
+
+  <!-- =========================
+       CSS
+  ========================== -->
   <link rel="stylesheet" href="style.css">
 
 </head>
@@ -26,35 +40,63 @@
     <header class="header">
 
       <div class="header-top">
-        <span class="badge">Clinical Archive</span>
+
+        <span class="badge">
+          Clinical Archive System
+        </span>
+
       </div>
 
-      <h1>WARD EXPERIENCES™</h1>
+      <h1>
+        WARD EXPERIENCES™
+      </h1>
 
       <p class="sub">
-        Real Clinical Encounters • Psychological Imprints • Medical Reality Flashcards
+        Real Clinical Encounters • Psychological Imprints •
+        Medical Reality Flashcards
       </p>
 
     </header>
 
     <!-- =========================
-         ACCESS STATUS BAR
+         STATUS BAR
     ========================== -->
     <section class="status-bar">
 
       <div class="status-item">
-        <span class="label">Access Plan</span>
-        <span id="planLabel">Free Access</span>
+
+        <span class="label">
+          Access
+        </span>
+
+        <span id="planLabel">
+          Restricted
+        </span>
+
       </div>
 
       <div class="status-item">
-        <span class="label">Unlocked Wards</span>
-        <span id="unlockCount">1</span>
+
+        <span class="label">
+          Archive State
+        </span>
+
+        <span id="unlockCount">
+          Locked
+        </span>
+
       </div>
 
       <div class="status-item">
-        <span class="label">Reads</span>
-        <span id="readCount">0</span>
+
+        <span class="label">
+          Reads
+        </span>
+
+        <span id="readCount">
+          0
+        </span>
+
       </div>
 
     </section>
@@ -65,20 +107,29 @@
     <section class="device-box">
 
       <div class="section-title-wrap">
-        <h3>Device Identity</h3>
+
+        <h3>
+          Device Identity
+        </h3>
+
         <p class="section-sub">
-          Required for payment verification and archive access validation
+          Required for archive verification and
+          Gatekeeper authorization
         </p>
+
       </div>
 
       <div class="device-id-wrap">
 
-        <div class="device-id" id="deviceIDBox">
-          Loading Device Identity...
+        <div
+          class="device-id"
+          id="deviceIDBox"
+        >
+          Initializing Device...
         </div>
 
         <button onclick="copyDeviceID()">
-          Copy Device ID
+          Copy Device Identity
         </button>
 
       </div>
@@ -91,41 +142,89 @@
     <section class="payment-box">
 
       <div class="section-title-wrap">
-        <h3>Archive Access Payment</h3>
+
+        <h3>
+          Archive Access Payment
+        </h3>
+
         <p class="section-sub">
-          Complete payment and submit verification through WhatsApp support
+          Complete payment and submit verification
+          through WhatsApp support
         </p>
+
       </div>
 
+      <!-- BANK CARD -->
       <div class="bank-card">
 
         <div class="bank-line">
-          <span class="bank-label">Bank</span>
-          <span class="bank-value">Smartcash</span>
+
+          <span class="bank-label">
+            Bank
+          </span>
+
+          <span class="bank-value">
+            Smartcash
+          </span>
+
         </div>
 
         <div class="bank-line">
-          <span class="bank-label">Account Name</span>
-          <span class="bank-value">Abubakar Haruna</span>
+
+          <span class="bank-label">
+            Account Name
+          </span>
+
+          <span class="bank-value">
+            Abubakar Haruna
+          </span>
+
         </div>
 
         <div class="bank-line">
-          <span class="bank-label">Account Number</span>
-          <span class="bank-value">8122382332</span>
+
+          <span class="bank-label">
+            Account Number
+          </span>
+
+          <span class="bank-value">
+            8122382332
+          </span>
+
         </div>
 
       </div>
 
+      <!-- INSTRUCTIONS -->
       <div class="instruction-box">
 
-        <h4>Verification Flow</h4>
+        <h4>
+          Verification Flow
+        </h4>
 
         <ol>
-          <li>Complete payment transfer</li>
-          <li>Take screenshot of transaction</li>
-          <li>Copy your Device Identity</li>
-          <li>Send both to WhatsApp support</li>
-          <li>Receive Gatekeeper Access Code</li>
+
+          <li>
+            Complete payment transfer
+          </li>
+
+          <li>
+            Take screenshot of transaction
+          </li>
+
+          <li>
+            Copy your Device Identity
+          </li>
+
+          <li>
+            Send screenshot + Device Identity
+            to WhatsApp support
+          </li>
+
+          <li>
+            Receive Gatekeeper Code
+          </li>
+
         </ol>
 
       </div>
@@ -139,21 +238,35 @@
 
       <div class="unlock-header">
 
-        <h3>Gatekeeper Access</h3>
+        <div class="gatekeeper-badge">
+          Restricted Archive
+        </div>
+
+        <h3>
+          Gatekeeper Access
+        </h3>
 
         <p class="unlock-sub">
-          Enter authorized archive code to continue reading restricted clinical experiences
+
+          This archive contains protected
+          clinical experiences.
+
+          Enter authorized Gatekeeper Code
+          to unlock the complete
+          Ward Experiences™ collection.
+
         </p>
 
       </div>
 
+      <!-- INPUT GROUP -->
       <div class="unlock-input-group">
 
         <input
-          type="text"
+          type="password"
           id="codeInput"
           class="unlock-input"
-          placeholder="WARD-XXXX-XXXX"
+          placeholder="ENTER GATEKEEPER CODE"
           autocomplete="off"
           spellcheck="false"
         >
@@ -162,13 +275,18 @@
           class="unlock-btn"
           onclick="unlockContent()"
         >
-          Unlock Archive
+          Unlock Full Archive
         </button>
 
       </div>
 
+      <!-- STATUS -->
       <div class="unlock-status-wrap">
-        <p id="status">Awaiting Gatekeeper Code...</p>
+
+        <p id="status">
+          Awaiting authorized Gatekeeper access...
+        </p>
+
       </div>
 
     </section>
@@ -180,16 +298,25 @@
 
       <div class="progress-header">
 
-        <h3>Clinical Archive Progress</h3>
+        <h3>
+          Archive Progress
+        </h3>
 
-        <span id="progressPercent">0%</span>
+        <span id="progressPercent">
+          0%
+        </span>
 
       </div>
 
       <div class="progress-bar-wrap">
 
         <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
+
+          <div
+            class="progress-fill"
+            id="progressFill"
+          ></div>
+
         </div>
 
       </div>
@@ -201,14 +328,17 @@
     ========================== -->
     <main id="card-container">
 
-      <!-- Cards injected via app.js -->
+      <!-- FLASHCARDS INJECTED BY JS -->
 
     </main>
 
     <!-- =========================
-         LOCKED OVERLAY
+         LOCK OVERLAY
     ========================== -->
-    <div id="lockOverlay" class="lock-overlay">
+    <div
+      id="lockOverlay"
+      class="lock-overlay"
+    >
 
       <div class="lock-box">
 
@@ -216,14 +346,22 @@
           🔒
         </div>
 
-        <h2>Restricted Clinical Archive</h2>
+        <h2>
+          Restricted Clinical Archive
+        </h2>
 
         <p>
-          Additional ward experiences require authorized Gatekeeper access.
+
+          Additional clinical experiences
+          require authorized Gatekeeper access.
+
         </p>
 
         <div class="lock-meta">
-          Psychological Clinical Memory System • Protected Access Layer
+
+          Psychological Clinical Memory System
+          • Protected Access Layer
+
         </div>
 
       </div>
@@ -236,7 +374,7 @@
     <footer class="footer">
 
       <p>
-        WARD EXPERIENCES™ • Clinical Memory Archive System
+        WARD EXPERIENCES™ • Clinical Archive System
       </p>
 
     </footer>
