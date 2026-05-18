@@ -1,7 +1,7 @@
-/* ==================================================
+/* =========================================================
    WARD EXPERIENCES™
-   Clinical Archive Engine v3
-================================================== */
+   Clinical Archive Engine v4
+========================================================= */
 
 /* =========================
    GLOBAL STATE
@@ -22,20 +22,35 @@ let accessPlan =
   StorageEngine.getAccessPlan();
 
 /* =========================
+   INITIALIZE APP
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    initializeSystem();
+
+  }
+);
+
+/* =========================
    INITIALIZE SYSTEM
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+async function initializeSystem() {
 
   initializeDevice();
 
   updateStatusBar();
 
-  loadContent();
-
   attachTracking();
 
-});
+  await loadContent();
+
+  restoreUnlockedSession();
+
+}
 
 /* =========================
    DEVICE INITIALIZATION
@@ -48,16 +63,21 @@ function initializeDevice() {
     deviceID =
       generateDeviceID();
 
-    StorageEngine.setDeviceID(deviceID);
+    StorageEngine.setDeviceID(
+      deviceID
+    );
 
   }
 
   const deviceBox =
-    document.getElementById("deviceIDBox");
+    document.getElementById(
+      "deviceIDBox"
+    );
 
   if (deviceBox) {
 
-    deviceBox.innerText = deviceID;
+    deviceBox.innerText =
+      deviceID;
 
   }
 
@@ -88,12 +108,15 @@ async function loadContent() {
   try {
 
     const response =
-      await fetch("content.json");
+      await fetch(
+        "content.json"
+      );
 
     const json =
       await response.json();
 
-    cardsData = json.cards || [];
+    cardsData =
+      json.cards || [];
 
     renderCards();
 
@@ -104,7 +127,7 @@ async function loadContent() {
   } catch (error) {
 
     console.error(
-      "Failed to load content:",
+      "Content loading failed:",
       error
     );
 
@@ -119,121 +142,158 @@ async function loadContent() {
 function renderCards() {
 
   const container =
-    document.getElementById("card-container");
+    document.getElementById(
+      "card-container"
+    );
 
   if (!container) return;
 
   container.innerHTML = "";
 
-  cardsData.forEach((card, index) => {
+  cardsData.forEach(
+    (card, index) => {
 
-    const isLocked =
-      index >= unlockLimit;
+      const isLocked =
+        index >= unlockLimit;
 
-    const div =
-      document.createElement("div");
+      const cardElement =
+        document.createElement(
+          "div"
+        );
 
-    div.className =
-      `card ${isLocked ? "locked" : ""}`;
+      cardElement.className =
+        `card ${
+          isLocked
+            ? "locked"
+            : ""
+        }`;
 
-    const lessonsHTML =
-      card.content.clinical_lessons
-        .map(
-          lesson =>
-            `<li>${lesson}</li>`
-        )
-        .join("");
+      const lessonsHTML =
+        card.content
+          .clinical_lessons
+          .map(
+            lesson =>
+              `<li>${lesson}</li>`
+          )
+          .join("");
 
-    div.innerHTML = `
+      cardElement.innerHTML = `
 
-      <div class="card-top">
+        <div class="card-top">
 
-        <div class="card-badge">
-          ${card.ward}
+          <div class="card-badge">
+            ${card.ward}
+          </div>
+
+          <div class="card-time">
+            ${card.time}
+          </div>
+
         </div>
 
-        <div class="card-time">
-          ${card.time}
-        </div>
+        <h2>
+          ${card.title}
+        </h2>
 
-      </div>
+        <h4>
+          ${card.subtitle}
+        </h4>
 
-      <h2>${card.title}</h2>
+        ${
+          isLocked
+            ? `
+              <div class="locked-content">
+                🔒 Restricted Clinical Archive
+              </div>
+            `
+            : `
+              <div class="story-block">
 
-      <h4>${card.subtitle}</h4>
+                <p>
+                  ${card.content.story}
+                </p>
 
-      ${
-        isLocked
-          ? `
-          <div class="locked-content">
-            🔒 Restricted Clinical Experience
-          </div>
-        `
-          : `
-          <div class="story-block">
-            <p>${card.content.story}</p>
-          </div>
+              </div>
 
-          <div class="lesson-block">
+              <div class="lesson-block">
 
-            <h5>Clinical Lessons</h5>
+                <h5>
+                  Clinical Lessons
+                </h5>
 
-            <ul>
-              ${lessonsHTML}
-            </ul>
+                <ul>
+                  ${lessonsHTML}
+                </ul>
 
-          </div>
+              </div>
 
-          <div class="psych-block">
+              <div class="psych-block">
 
-            <h5>Psychological Insight</h5>
+                <h5>
+                  Psychological Insight
+                </h5>
 
-            <p>
-              ${card.content.psychological_insight}
-            </p>
+                <p>
+                  ${card.content.psychological_insight}
+                </p>
 
-          </div>
-        `
-      }
+              </div>
+            `
+        }
 
-    `;
+      `;
 
-    div.addEventListener("click", () => {
+      cardElement.addEventListener(
+        "click",
+        () => {
 
-      if (!isLocked) {
+          if (!isLocked) {
 
-        StorageEngine.setLastCard(card.id);
+            StorageEngine.setLastCard(
+              card.id
+            );
 
-      }
+          }
 
-    });
+        }
+      );
 
-    container.appendChild(div);
+      container.appendChild(
+        cardElement
+      );
 
-  });
+    }
+  );
 
 }
 
 /* =========================
-   UNLOCK SYSTEM
+   GATEKEEPER UNLOCK
 ========================= */
 
 async function unlockContent() {
 
   const input =
     document
-      .getElementById("codeInput")
+      .getElementById(
+        "codeInput"
+      )
       .value
       .trim()
       .toUpperCase();
 
   const status =
-    document.getElementById("status");
+    document.getElementById(
+      "status"
+    );
 
   if (!input) {
 
     status.innerText =
-      "⚠️ Enter a Gatekeeper Code.";
+      "⚠️ Enter Gatekeeper Code.";
+
+    status.style.color =
+      "var(--danger)";
 
     return;
 
@@ -242,25 +302,27 @@ async function unlockContent() {
   try {
 
     const response =
-      await fetch("codes.json");
+      await fetch(
+        "codes.json"
+      );
 
     const data =
       await response.json();
 
-    const match =
-      data.codes.find(
-        code =>
-          code.code === input &&
-          code.status === "active"
-      );
+    const gatekeeper =
+      data.gatekeeper;
 
-    if (match) {
+    if (
+      input ===
+        gatekeeper.code &&
+      gatekeeper.status ===
+        "active"
+    ) {
 
-      unlockLimit =
-        match.unlockCardsUntil;
+      unlockLimit = 9999;
 
       accessPlan =
-        match.plan;
+        "Full Archive Access";
 
       StorageEngine.setUnlockLimit(
         unlockLimit
@@ -271,31 +333,29 @@ async function unlockContent() {
       );
 
       StorageEngine.setActiveCode(
-        match.code
-      );
-
-      StorageEngine.setExpiration(
-        match.expires
+        gatekeeper.code
       );
 
       status.innerText =
-        `✅ ${match.plan} Activated`;
+        "✅ Full Clinical Archive Unlocked";
 
       status.style.color =
         "var(--success)";
 
       renderCards();
 
-      updateProgress();
-
       updateStatusBar();
 
+      updateProgress();
+
       updateLockState();
+
+      celebrateUnlock();
 
     } else {
 
       status.innerText =
-        "❌ Invalid or inactive code.";
+        "❌ Invalid Gatekeeper Code.";
 
       status.style.color =
         "var(--danger)";
@@ -307,17 +367,53 @@ async function unlockContent() {
     console.error(error);
 
     status.innerText =
-      "⚠️ Unable to validate access code.";
+      "⚠️ Unable to validate access.";
+
+    status.style.color =
+      "var(--danger)";
 
   }
 
 }
 
 /* =========================
-   UPDATE STATUS BAR
+   RESTORE SESSION
+========================= */
+
+function restoreUnlockedSession() {
+
+  const activeCode =
+    StorageEngine.getActiveCode();
+
+  if (activeCode) {
+
+    unlockLimit = 9999;
+
+    accessPlan =
+      "Full Archive Access";
+
+    renderCards();
+
+    updateStatusBar();
+
+    updateProgress();
+
+    updateLockState();
+
+  }
+
+}
+
+/* =========================
+   STATUS BAR
 ========================= */
 
 function updateStatusBar() {
+
+  const planLabel =
+    document.getElementById(
+      "planLabel"
+    );
 
   const unlockCount =
     document.getElementById(
@@ -329,15 +425,20 @@ function updateStatusBar() {
       "readCount"
     );
 
-  const planLabel =
-    document.getElementById(
-      "planLabel"
-    );
+  if (planLabel) {
+
+    planLabel.innerText =
+      accessPlan ||
+      "Restricted";
+
+  }
 
   if (unlockCount) {
 
     unlockCount.innerText =
-      unlockLimit;
+      unlockLimit > 1
+        ? "Unlocked"
+        : "Locked";
 
   }
 
@@ -348,53 +449,46 @@ function updateStatusBar() {
 
   }
 
-  if (planLabel) {
-
-    planLabel.innerText =
-      accessPlan;
-
-  }
-
 }
 
 /* =========================
-   PROGRESS SYSTEM
+   UPDATE PROGRESS
 ========================= */
 
 function updateProgress() {
 
-  const progressFill =
+  const fill =
     document.getElementById(
       "progressFill"
     );
 
-  const progressPercent =
+  const percentText =
     document.getElementById(
       "progressPercent"
     );
 
-  if (!cardsData.length) return;
+  if (
+    !cardsData.length
+  ) return;
 
-  const percent =
-    Math.min(
-      Math.floor(
-        (unlockLimit /
-          cardsData.length) *
-          100
-      ),
-      100
-    );
+  let percent = 0;
 
-  if (progressFill) {
+  if (unlockLimit > 1) {
 
-    progressFill.style.width =
+    percent = 100;
+
+  }
+
+  if (fill) {
+
+    fill.style.width =
       `${percent}%`;
 
   }
 
-  if (progressPercent) {
+  if (percentText) {
 
-    progressPercent.innerText =
+    percentText.innerText =
       `${percent}%`;
 
   }
@@ -402,7 +496,7 @@ function updateProgress() {
 }
 
 /* =========================
-   LOCK OVERLAY CONTROL
+   LOCK OVERLAY
 ========================= */
 
 function updateLockState() {
@@ -414,15 +508,15 @@ function updateLockState() {
 
   if (!overlay) return;
 
-  if (unlockLimit <= 1) {
+  if (unlockLimit > 1) {
 
     overlay.style.display =
-      "flex";
+      "none";
 
   } else {
 
     overlay.style.display =
-      "none";
+      "flex";
 
   }
 
@@ -438,16 +532,27 @@ function copyDeviceID() {
     .writeText(deviceID)
     .then(() => {
 
-      alert(
-        "Device Identity copied"
-      );
+      const status =
+        document.getElementById(
+          "status"
+        );
+
+      if (status) {
+
+        status.innerText =
+          "📋 Device Identity copied.";
+
+        status.style.color =
+          "var(--accent)";
+
+      }
 
     });
 
 }
 
 /* =========================
-   READ TRACKING
+   TRACK USER ENGAGEMENT
 ========================= */
 
 function attachTracking() {
@@ -491,15 +596,15 @@ function trackRead() {
 
   updateStatusBar();
 
-  behavioralPressure();
+  archivePressureSystem();
 
 }
 
 /* =========================
-   BEHAVIORAL MONETIZATION
+   ARCHIVE PRESSURE SYSTEM
 ========================= */
 
-function behavioralPressure() {
+function archivePressureSystem() {
 
   const status =
     document.getElementById(
@@ -508,26 +613,54 @@ function behavioralPressure() {
 
   if (!status) return;
 
-  if (reads === 5) {
+  if (
+    unlockLimit <= 1
+  ) {
 
-    status.innerText =
-      "🔒 Additional clinical archives require premium access.";
+    if (reads === 5) {
+
+      status.innerText =
+        "🔒 Additional experiences remain restricted.";
+
+    }
+
+    if (reads === 10) {
+
+      status.innerText =
+        "⚠️ Gatekeeper authorization required.";
+
+    }
+
+    if (reads === 15) {
+
+      status.innerText =
+        "🧠 Unlock deeper clinical psychology archives.";
+
+    }
 
   }
 
-  if (reads === 10) {
+}
 
-    status.innerText =
-      "⚠️ Archive restriction intensifying.";
+/* =========================
+   UNLOCK CELEBRATION
+========================= */
 
-  }
+function celebrateUnlock() {
 
-  if (reads === 15) {
-
-    status.innerText =
-      "🧠 Unlock deeper psychological clinical experiences.";
-
-  }
+  document.body.animate(
+    [
+      {
+        opacity: 0.96
+      },
+      {
+        opacity: 1
+      }
+    ],
+    {
+      duration: 500
+    }
+  );
 
 }
 
@@ -554,7 +687,8 @@ function behavioralPressure() {
 
     unlockLimit = 1;
 
-    accessPlan = "Expired";
+    accessPlan =
+      "Restricted";
 
   }
 
