@@ -1,6 +1,6 @@
 /* =========================================================
    WARD EXPERIENCES™
-   Clinical Archive Engine v4
+   Clinical Archive Engine v5 (ELITE SYSTEM)
 ========================================================= */
 
 /* =========================
@@ -9,399 +9,307 @@
 
 let cardsData = [];
 
-let unlockLimit =
-  StorageEngine.getUnlockLimit();
+let reads = StorageEngine.getReads();
+let deviceID = StorageEngine.getDeviceID();
+let accessPlan = StorageEngine.getAccessPlan();
 
-let reads =
-  StorageEngine.getReads();
+let previewLimit = 2;
 
-let deviceID =
-  StorageEngine.getDeviceID();
+let fullUnlock = false;
 
-let accessPlan =
-  StorageEngine.getAccessPlan();
+let softGateTriggered = false;
+let paywallShown = false;
 
-/* =========================
-   INITIALIZE APP
-========================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    initializeSystem();
-
-  }
-);
+let emotionalScore = 0;
+let sessionTime = 0;
+let scrollDepth = 0;
 
 /* =========================
-   INITIALIZE SYSTEM
+   INIT
 ========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  initializeSystem();
+});
 
 async function initializeSystem() {
-
   initializeDevice();
-
   updateStatusBar();
-
   attachTracking();
-
   await loadContent();
-
-  restoreUnlockedSession();
-
+  restoreSession();
 }
 
 /* =========================
-   DEVICE INITIALIZATION
+   DEVICE
 ========================= */
 
 function initializeDevice() {
-
   if (!deviceID) {
-
-    deviceID =
-      generateDeviceID();
-
-    StorageEngine.setDeviceID(
-      deviceID
-    );
-
+    deviceID = generateDeviceID();
+    StorageEngine.setDeviceID(deviceID);
   }
 
-  const deviceBox =
-    document.getElementById(
-      "deviceIDBox"
-    );
-
-  if (deviceBox) {
-
-    deviceBox.innerText =
-      deviceID;
-
-  }
-
+  const box = document.getElementById("deviceIDBox");
+  if (box) box.innerText = deviceID;
 }
-
-/* =========================
-   GENERATE DEVICE ID
-========================= */
 
 function generateDeviceID() {
-
-  const random =
-    Math.random()
-      .toString(36)
-      .substring(2, 10)
-      .toUpperCase();
-
-  return `WARD-${random}`;
-
+  return `WARD-${Math.random()
+    .toString(36)
+    .substring(2, 10)
+    .toUpperCase()}`;
 }
 
 /* =========================
-   LOAD CONTENT
+   CONTENT LOADING
 ========================= */
 
 async function loadContent() {
-
   try {
+    const res = await fetch("content.json");
+    const json = await res.json();
 
-    const response =
-      await fetch(
-        "content.json"
-      );
-
-    const json =
-      await response.json();
-
-    cardsData =
-      json.cards || [];
+    cardsData = json.cards || [];
 
     renderCards();
-
+    updateStatusBar();
     updateProgress();
-
     updateLockState();
-
-  } catch (error) {
-
-    console.error(
-      "Content loading failed:",
-      error
-    );
-
+  } catch (err) {
+    console.error("Content load failed:", err);
   }
-
 }
 
 /* =========================
-   RENDER FLASHCARDS
+   RENDER SYSTEM (MEDIUM STYLE)
 ========================= */
 
 function renderCards() {
-
-  const container =
-    document.getElementById(
-      "card-container"
-    );
-
+  const container = document.getElementById("card-container");
   if (!container) return;
 
   container.innerHTML = "";
 
-  cardsData.forEach(
-    (card, index) => {
+  cardsData.forEach((card, index) => {
+    let state = "free";
 
-      const isLocked =
-        index >= unlockLimit;
-
-      const cardElement =
-        document.createElement(
-          "div"
-        );
-
-      cardElement.className =
-        `card ${
-          isLocked
-            ? "locked"
-            : ""
-        }`;
-
-      const lessonsHTML =
-        card.content
-          .clinical_lessons
-          .map(
-            lesson =>
-              `<li>${lesson}</li>`
-          )
-          .join("");
-
-      cardElement.innerHTML = `
-
-        <div class="card-top">
-
-          <div class="card-badge">
-            ${card.ward}
-          </div>
-
-          <div class="card-time">
-            ${card.time}
-          </div>
-
-        </div>
-
-        <h2>
-          ${card.title}
-        </h2>
-
-        <h4>
-          ${card.subtitle}
-        </h4>
-
-        ${
-          isLocked
-            ? `
-              <div class="locked-content">
-                🔒 Restricted Clinical Archive
-              </div>
-            `
-            : `
-              <div class="story-block">
-
-                <p>
-                  ${card.content.story}
-                </p>
-
-              </div>
-
-              <div class="lesson-block">
-
-                <h5>
-                  Clinical Lessons
-                </h5>
-
-                <ul>
-                  ${lessonsHTML}
-                </ul>
-
-              </div>
-
-              <div class="psych-block">
-
-                <h5>
-                  Psychological Insight
-                </h5>
-
-                <p>
-                  ${card.content.psychological_insight}
-                </p>
-
-              </div>
-            `
-        }
-
-      `;
-
-      cardElement.addEventListener(
-        "click",
-        () => {
-
-          if (!isLocked) {
-
-            StorageEngine.setLastCard(
-              card.id
-            );
-
-          }
-
-        }
-      );
-
-      container.appendChild(
-        cardElement
-      );
-
+    if (index >= previewLimit && !fullUnlock) {
+      state = "teaser";
     }
-  );
 
+    const el = document.createElement("div");
+    el.className = `card ${state}`;
+
+    const lessonsHTML = card.content.clinical_lessons
+      .map(l => `<li>${l}</li>`)
+      .join("");
+
+    el.innerHTML = `
+      <div class="card-top">
+        <div class="card-badge">${card.ward}</div>
+        <div class="card-time">${card.time}</div>
+      </div>
+
+      <h2>${card.title}</h2>
+      <h4>${card.subtitle}</h4>
+
+      ${
+        state === "free" || fullUnlock
+          ? `
+            <div class="story-block">
+              <p>${card.content.story}</p>
+            </div>
+
+            <div class="lesson-block">
+              <h5>Clinical Lessons</h5>
+              <ul>${lessonsHTML}</ul>
+            </div>
+
+            <div class="psych-block">
+              <h5>Psychological Insight</h5>
+              <p>${card.content.psychological_insight}</p>
+            </div>
+          `
+          : `
+            <div class="teaser-block">
+              🔒 Continue reading unlocks deeper clinical layers
+            </div>
+          `
+      }
+    `;
+
+    container.appendChild(el);
+  });
 }
 
 /* =========================
-   GATEKEEPER UNLOCK
+   TRACKING ENGINE
+========================= */
+
+function attachTracking() {
+  let start = Date.now();
+
+  window.addEventListener("scroll", () => {
+    scrollDepth =
+      window.scrollY / document.body.scrollHeight;
+  });
+
+  setInterval(() => {
+    sessionTime = Date.now() - start;
+    reads++;
+    StorageEngine.incrementReads();
+
+    updateEmotionalScore();
+    updateStatusBar();
+  }, 2000);
+}
+
+/* =========================
+   EMOTIONAL ENGINE
+========================= */
+
+function updateEmotionalScore() {
+  emotionalScore = 0;
+
+  emotionalScore += reads * 2;
+  emotionalScore += sessionTime / 10000;
+  emotionalScore += scrollDepth * 10;
+
+  triggerSystemChecks();
+}
+
+/* =========================
+   TRIGGER SYSTEM
+========================= */
+
+function triggerSystemChecks() {
+  if (!softGateTriggered && emotionalScore > 5) {
+    triggerSoftGate();
+  }
+
+  if (!paywallShown && emotionalScore > 12) {
+    triggerPaywallMoment();
+  }
+
+  if (emotionalScore > 20) {
+    triggerHardGate();
+  }
+}
+
+/* =========================
+   SOFT GATE
+========================= */
+
+function triggerSoftGate() {
+  softGateTriggered = true;
+
+  const status = document.getElementById("status");
+
+  if (status) {
+    status.innerText =
+      "You are entering deeper clinical layers. Some experiences may soon require Gatekeeper access.";
+  }
+}
+
+/* =========================
+   PAYWALL MOMENT (ELITE)
+========================= */
+
+function triggerPaywallMoment() {
+  paywallShown = true;
+
+  const overlay = document.getElementById("lockOverlay");
+
+  if (!overlay) return;
+
+  overlay.innerHTML = `
+    <div class="lock-box">
+
+      <div class="lock-icon">🧠</div>
+
+      <h2>Depth Threshold Reached</h2>
+
+      <p>
+        You’ve engaged deeply with this clinical archive.
+        Continue requires Gatekeeper verification.
+      </p>
+
+      <input
+        type="password"
+        id="codeInput"
+        class="unlock-input"
+        placeholder="Enter Gatekeeper Code"
+      >
+
+      <button class="unlock-btn" onclick="unlockContent()">
+        Continue Experience
+      </button>
+
+    </div>
+  `;
+
+  overlay.style.display = "flex";
+}
+
+/* =========================
+   HARD GATE
+========================= */
+
+function triggerHardGate() {
+  const overlay = document.getElementById("lockOverlay");
+  if (overlay) overlay.style.display = "flex";
+}
+
+/* =========================
+   UNLOCK SYSTEM
 ========================= */
 
 async function unlockContent() {
+  const input = document
+    .getElementById("codeInput")
+    .value
+    .trim()
+    .toUpperCase();
 
-  const input =
-    document
-      .getElementById(
-        "codeInput"
-      )
-      .value
-      .trim()
-      .toUpperCase();
+  const res = await fetch("codes.json");
+  const data = await res.json();
 
-  const status =
-    document.getElementById(
-      "status"
-    );
+  const gatekeeper = data.gatekeeper;
 
-  if (!input) {
+  if (input === gatekeeper.code) {
+    fullUnlock = true;
+    previewLimit = 9999;
 
-    status.innerText =
-      "⚠️ Enter Gatekeeper Code.";
+    accessPlan = "Elite Clinical Access";
 
-    status.style.color =
-      "var(--danger)";
+    StorageEngine.setActiveCode(gatekeeper.code);
+    StorageEngine.setAccessPlan(accessPlan);
 
-    return;
+    renderCards();
+    updateStatusBar();
 
+    document.getElementById("status").innerText =
+      "Access granted. Full clinical archive unlocked.";
+
+  } else {
+    document.getElementById("status").innerText =
+      "Invalid Gatekeeper Code.";
   }
-
-  try {
-
-    const response =
-      await fetch(
-        "codes.json"
-      );
-
-    const data =
-      await response.json();
-
-    const gatekeeper =
-      data.gatekeeper;
-
-    if (
-      input ===
-        gatekeeper.code &&
-      gatekeeper.status ===
-        "active"
-    ) {
-
-      unlockLimit = 9999;
-
-      accessPlan =
-        "Full Archive Access";
-
-      StorageEngine.setUnlockLimit(
-        unlockLimit
-      );
-
-      StorageEngine.setAccessPlan(
-        accessPlan
-      );
-
-      StorageEngine.setActiveCode(
-        gatekeeper.code
-      );
-
-      status.innerText =
-        "✅ Full Clinical Archive Unlocked";
-
-      status.style.color =
-        "var(--success)";
-
-      renderCards();
-
-      updateStatusBar();
-
-      updateProgress();
-
-      updateLockState();
-
-      celebrateUnlock();
-
-    } else {
-
-      status.innerText =
-        "❌ Invalid Gatekeeper Code.";
-
-      status.style.color =
-        "var(--danger)";
-
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.innerText =
-      "⚠️ Unable to validate access.";
-
-    status.style.color =
-      "var(--danger)";
-
-  }
-
 }
 
 /* =========================
-   RESTORE SESSION
+   SESSION RESTORE
 ========================= */
 
-function restoreUnlockedSession() {
+function restoreSession() {
+  const active = StorageEngine.getActiveCode();
 
-  const activeCode =
-    StorageEngine.getActiveCode();
-
-  if (activeCode) {
-
-    unlockLimit = 9999;
-
-    accessPlan =
-      "Full Archive Access";
-
-    renderCards();
-
-    updateStatusBar();
-
-    updateProgress();
-
-    updateLockState();
-
+  if (active) {
+    fullUnlock = true;
+    previewLimit = 9999;
+    accessPlan = "Elite Clinical Access";
   }
-
 }
 
 /* =========================
@@ -409,287 +317,37 @@ function restoreUnlockedSession() {
 ========================= */
 
 function updateStatusBar() {
+  const plan = document.getElementById("planLabel");
+  const unlock = document.getElementById("unlockCount");
+  const read = document.getElementById("readCount");
 
-  const planLabel =
-    document.getElementById(
-      "planLabel"
-    );
-
-  const unlockCount =
-    document.getElementById(
-      "unlockCount"
-    );
-
-  const readCount =
-    document.getElementById(
-      "readCount"
-    );
-
-  if (planLabel) {
-
-    planLabel.innerText =
-      accessPlan ||
-      "Restricted";
-
-  }
-
-  if (unlockCount) {
-
-    unlockCount.innerText =
-      unlockLimit > 1
-        ? "Unlocked"
-        : "Locked";
-
-  }
-
-  if (readCount) {
-
-    readCount.innerText =
-      reads;
-
-  }
-
+  if (plan) plan.innerText = accessPlan || "Restricted";
+  if (unlock) unlock.innerText = fullUnlock ? "Unlocked" : "Reading Mode";
+  if (read) read.innerText = reads;
 }
 
 /* =========================
-   UPDATE PROGRESS
+   PROGRESS (SIMPLE)
 ========================= */
 
 function updateProgress() {
+  const fill = document.getElementById("progressFill");
+  const text = document.getElementById("progressPercent");
 
-  const fill =
-    document.getElementById(
-      "progressFill"
-    );
+  let percent = fullUnlock ? 100 : 30;
 
-  const percentText =
-    document.getElementById(
-      "progressPercent"
-    );
-
-  if (
-    !cardsData.length
-  ) return;
-
-  let percent = 0;
-
-  if (unlockLimit > 1) {
-
-    percent = 100;
-
-  }
-
-  if (fill) {
-
-    fill.style.width =
-      `${percent}%`;
-
-  }
-
-  if (percentText) {
-
-    percentText.innerText =
-      `${percent}%`;
-
-  }
-
+  if (fill) fill.style.width = `${percent}%`;
+  if (text) text.innerText = `${percent}%`;
 }
 
 /* =========================
-   LOCK OVERLAY
+   LOCK STATE
 ========================= */
 
 function updateLockState() {
-
-  const overlay =
-    document.getElementById(
-      "lockOverlay"
-    );
+  const overlay = document.getElementById("lockOverlay");
 
   if (!overlay) return;
 
-  if (unlockLimit > 1) {
-
-    overlay.style.display =
-      "none";
-
-  } else {
-
-    overlay.style.display =
-      "flex";
-
-  }
-
+  overlay.style.display = fullUnlock ? "none" : "flex";
 }
-
-/* =========================
-   COPY DEVICE ID
-========================= */
-
-function copyDeviceID() {
-
-  navigator.clipboard
-    .writeText(deviceID)
-    .then(() => {
-
-      const status =
-        document.getElementById(
-          "status"
-        );
-
-      if (status) {
-
-        status.innerText =
-          "📋 Device Identity copied.";
-
-        status.style.color =
-          "var(--accent)";
-
-      }
-
-    });
-
-}
-
-/* =========================
-   TRACK USER ENGAGEMENT
-========================= */
-
-function attachTracking() {
-
-  let ticking = false;
-
-  window.addEventListener(
-    "scroll",
-    () => {
-
-      if (!ticking) {
-
-        window.requestAnimationFrame(
-          () => {
-
-            trackRead();
-
-            ticking = false;
-
-          }
-        );
-
-        ticking = true;
-
-      }
-
-    }
-  );
-
-}
-
-/* =========================
-   TRACK READS
-========================= */
-
-function trackRead() {
-
-  reads++;
-
-  StorageEngine.incrementReads();
-
-  updateStatusBar();
-
-  archivePressureSystem();
-
-}
-
-/* =========================
-   ARCHIVE PRESSURE SYSTEM
-========================= */
-
-function archivePressureSystem() {
-
-  const status =
-    document.getElementById(
-      "status"
-    );
-
-  if (!status) return;
-
-  if (
-    unlockLimit <= 1
-  ) {
-
-    if (reads === 5) {
-
-      status.innerText =
-        "🔒 Additional experiences remain restricted.";
-
-    }
-
-    if (reads === 10) {
-
-      status.innerText =
-        "⚠️ Gatekeeper authorization required.";
-
-    }
-
-    if (reads === 15) {
-
-      status.innerText =
-        "🧠 Unlock deeper clinical psychology archives.";
-
-    }
-
-  }
-
-}
-
-/* =========================
-   UNLOCK CELEBRATION
-========================= */
-
-function celebrateUnlock() {
-
-  document.body.animate(
-    [
-      {
-        opacity: 0.96
-      },
-      {
-        opacity: 1
-      }
-    ],
-    {
-      duration: 500
-    }
-  );
-
-}
-
-/* =========================
-   AUTO SESSION CHECK
-========================= */
-
-(function sessionCheck() {
-
-  const expiration =
-    StorageEngine.getExpiration();
-
-  if (!expiration) return;
-
-  const today =
-    new Date();
-
-  const expiry =
-    new Date(expiration);
-
-  if (today > expiry) {
-
-    StorageEngine.lockSystem();
-
-    unlockLimit = 1;
-
-    accessPlan =
-      "Restricted";
-
-  }
-
-})();
