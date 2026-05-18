@@ -1,7 +1,7 @@
-/* ==================================================
+/* =========================================================
    WARD EXPERIENCES™
-   Clinical Archive UI System
-================================================== */
+   Clinical Archive Interface v4
+========================================================= */
 
 /* =========================
    FONT IMPORT
@@ -14,24 +14,26 @@
 :root {
 
   --bg: #090b10;
-  --panel: #11141b;
+  --bg-2: #0f131b;
+
+  --panel: rgba(17,20,27,0.94);
   --card: #171b24;
 
-  --text: #f3f5f7;
-  --muted: #98a0ab;
+  --text: #f4f6f8;
+  --muted: #97a0ac;
 
   --accent: #c9a24e;
-  --accent-soft: rgba(201,162,78,0.14);
+  --accent-soft: rgba(201,162,78,0.12);
 
-  --danger: #ff4d4d;
-  --success: #58d68d;
+  --success: #57d48c;
+  --danger: #ff5c5c;
 
   --border: rgba(255,255,255,0.06);
 
   --shadow:
-    0 10px 30px rgba(0,0,0,0.35);
+    0 10px 35px rgba(0,0,0,0.35);
 
-  --radius: 18px;
+  --radius: 22px;
 
 }
 
@@ -39,9 +41,11 @@
    GLOBAL RESET
 ========================= */
 * {
+
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
 }
 
 /* =========================
@@ -50,14 +54,23 @@
 body {
 
   background:
-    radial-gradient(circle at top,
+    radial-gradient(
+      circle at top,
       rgba(201,162,78,0.08),
-      transparent 25%),
-    var(--bg);
+      transparent 24%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--bg),
+      var(--bg-2)
+    );
 
   color: var(--text);
 
-  font-family: Inter, system-ui, sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
 
   min-height: 100vh;
 
@@ -70,13 +83,14 @@ body {
 ========================= */
 .app {
 
+  width: 100%;
   max-width: 980px;
 
   margin: auto;
 
   padding:
-    30px
-    18px
+    28px
+    16px
     120px;
 
 }
@@ -88,7 +102,7 @@ body {
 
   text-align: center;
 
-  margin-bottom: 26px;
+  margin-bottom: 28px;
 
 }
 
@@ -100,21 +114,29 @@ body {
 
 .badge {
 
-  background: var(--accent-soft);
+  display: inline-flex;
 
-  color: var(--accent);
+  align-items: center;
+
+  justify-content: center;
 
   padding:
     8px
-    14px;
+    16px;
 
   border-radius: 999px;
 
-  font-size: 12px;
+  background:
+    var(--accent-soft);
 
-  border: 1px solid rgba(201,162,78,0.18);
+  border:
+    1px solid rgba(201,162,78,0.18);
 
-  letter-spacing: 1px;
+  color: var(--accent);
+
+  font-size: 11px;
+
+  letter-spacing: 1.4px;
 
   text-transform: uppercase;
 
@@ -122,18 +144,21 @@ body {
 
 .header h1 {
 
-  font-family: 'Akronim', display;
+  font-family:
+    'Akronim',
+    display;
 
-  font-size: clamp(48px, 9vw, 88px);
+  font-size:
+    clamp(50px, 10vw, 92px);
 
   color: var(--accent);
 
-  line-height: 1;
+  line-height: 0.95;
 
   margin-bottom: 14px;
 
   text-shadow:
-    0 0 20px rgba(201,162,78,0.25);
+    0 0 24px rgba(201,162,78,0.18);
 
 }
 
@@ -141,13 +166,13 @@ body {
 
   color: var(--muted);
 
-  font-size: 14px;
-
-  max-width: 700px;
+  max-width: 720px;
 
   margin: auto;
 
-  line-height: 1.6;
+  line-height: 1.7;
+
+  font-size: 14px;
 
 }
 
@@ -156,46 +181,24 @@ body {
 ========================= */
 section {
 
-  background: rgba(17,20,27,0.92);
+  background:
+    var(--panel);
 
   border:
     1px solid var(--border);
 
-  border-radius: var(--radius);
+  border-radius:
+    var(--radius);
 
   padding: 22px;
 
   margin-bottom: 22px;
 
-  backdrop-filter: blur(12px);
+  backdrop-filter:
+    blur(16px);
 
-  box-shadow: var(--shadow);
-
-}
-
-/* =========================
-   SECTION TITLES
-========================= */
-.section-title-wrap h3,
-.unlock-header h3,
-.progress-header h3 {
-
-  color: var(--accent);
-
-  font-size: 18px;
-
-  margin-bottom: 6px;
-
-}
-
-.section-sub,
-.unlock-sub {
-
-  color: var(--muted);
-
-  font-size: 13px;
-
-  line-height: 1.5;
+  box-shadow:
+    var(--shadow);
 
 }
 
@@ -207,7 +210,7 @@ section {
   display: grid;
 
   grid-template-columns:
-    repeat(auto-fit, minmax(150px, 1fr));
+    repeat(auto-fit, minmax(160px, 1fr));
 
   gap: 14px;
 
@@ -215,14 +218,15 @@ section {
 
 .status-item {
 
-  background: rgba(255,255,255,0.02);
+  background:
+    rgba(255,255,255,0.02);
 
   border:
     1px solid rgba(255,255,255,0.04);
 
-  border-radius: 14px;
+  border-radius: 18px;
 
-  padding: 16px;
+  padding: 18px;
 
   display: flex;
 
@@ -236,24 +240,50 @@ section {
 
   color: var(--muted);
 
-  font-size: 12px;
-
   text-transform: uppercase;
 
-  letter-spacing: 1px;
+  font-size: 11px;
+
+  letter-spacing: 1.4px;
 
 }
 
 .status-item span:last-child {
 
-  font-weight: 700;
-
   font-size: 16px;
+
+  font-weight: 700;
 
 }
 
 /* =========================
-   DEVICE ID
+   TITLES
+========================= */
+.section-title-wrap h3,
+.unlock-header h3,
+.progress-header h3 {
+
+  color: var(--accent);
+
+  font-size: 19px;
+
+  margin-bottom: 6px;
+
+}
+
+.section-sub,
+.unlock-sub {
+
+  color: var(--muted);
+
+  font-size: 13px;
+
+  line-height: 1.7;
+
+}
+
+/* =========================
+   DEVICE BOX
 ========================= */
 .device-id-wrap {
 
@@ -263,18 +293,19 @@ section {
 
   gap: 14px;
 
-  margin-top: 16px;
+  margin-top: 18px;
 
 }
 
 .device-id {
 
-  background: #0d1016;
+  background:
+    #0d1016;
 
   border:
     1px solid rgba(255,255,255,0.04);
 
-  border-radius: 14px;
+  border-radius: 16px;
 
   padding: 16px;
 
@@ -282,9 +313,9 @@ section {
 
   color: var(--accent);
 
-  word-break: break-word;
-
   font-size: 14px;
+
+  word-break: break-word;
 
 }
 
@@ -293,49 +324,68 @@ section {
 ========================= */
 button {
 
+  width: 100%;
+
   border: none;
 
-  background: var(--accent);
-
-  color: #111;
-
-  padding:
-    14px
-    18px;
-
-  border-radius: 14px;
+  outline: none;
 
   cursor: pointer;
 
-  font-weight: 700;
+  border-radius: 16px;
 
-  transition: 0.28s ease;
+  padding:
+    15px
+    18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent),
+      #f3cf73
+    );
+
+  color: #111;
+
+  font-weight: 800;
+
+  font-size: 14px;
+
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
 
 }
 
 button:hover {
 
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 
-  opacity: 0.92;
+  opacity: 0.94;
+
+}
+
+button:active {
+
+  transform:
+    scale(0.98);
 
 }
 
 /* =========================
-   BANK INFO
+   PAYMENT
 ========================= */
 .bank-card {
 
   margin-top: 18px;
 
-  background: rgba(255,255,255,0.02);
+  border-radius: 18px;
+
+  overflow: hidden;
 
   border:
     1px solid rgba(255,255,255,0.04);
-
-  border-radius: 16px;
-
-  overflow: hidden;
 
 }
 
@@ -345,11 +395,16 @@ button:hover {
 
   justify-content: space-between;
 
-  gap: 12px;
+  align-items: center;
+
+  gap: 14px;
 
   padding:
     16px
     18px;
+
+  background:
+    rgba(255,255,255,0.02);
 
   border-bottom:
     1px solid rgba(255,255,255,0.04);
@@ -376,26 +431,24 @@ button:hover {
 
 }
 
-/* =========================
-   INSTRUCTIONS
-========================= */
 .instruction-box {
 
   margin-top: 18px;
 
+  background:
+    rgba(255,255,255,0.02);
+
+  border-radius: 18px;
+
   padding: 18px;
-
-  border-radius: 14px;
-
-  background: rgba(255,255,255,0.02);
 
 }
 
 .instruction-box h4 {
 
-  margin-bottom: 10px;
-
   color: var(--accent);
+
+  margin-bottom: 12px;
 
 }
 
@@ -405,7 +458,7 @@ button:hover {
 
   color: var(--muted);
 
-  line-height: 1.8;
+  line-height: 1.9;
 
   font-size: 14px;
 
@@ -414,6 +467,34 @@ button:hover {
 /* =========================
    GATEKEEPER
 ========================= */
+.gatekeeper-badge {
+
+  display: inline-block;
+
+  margin-bottom: 14px;
+
+  padding:
+    7px
+    14px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(201,162,78,0.12);
+
+  border:
+    1px solid rgba(201,162,78,0.18);
+
+  color: var(--accent);
+
+  font-size: 11px;
+
+  letter-spacing: 1.4px;
+
+  text-transform: uppercase;
+
+}
+
 .unlock-input-group {
 
   display: flex;
@@ -430,31 +511,33 @@ button:hover {
 
   width: 100%;
 
-  background: #0d1016;
+  padding: 16px;
 
-  color: white;
+  border-radius: 18px;
 
   border:
     1px solid rgba(255,255,255,0.08);
 
-  border-radius: 14px;
+  background:
+    #0d1016;
 
-  padding: 16px;
+  color: white;
+
+  font-size: 14px;
 
   outline: none;
 
   transition: 0.3s ease;
 
-  font-size: 14px;
-
 }
 
 .unlock-input:focus {
 
-  border-color: var(--accent);
+  border-color:
+    var(--accent);
 
   box-shadow:
-    0 0 0 3px rgba(201,162,78,0.16);
+    0 0 0 3px rgba(201,162,78,0.14);
 
 }
 
@@ -466,14 +549,14 @@ button:hover {
 
 #status {
 
-  color: var(--muted);
-
   font-size: 13px;
+
+  color: var(--muted);
 
 }
 
 /* =========================
-   PROGRESS BAR
+   PROGRESS
 ========================= */
 .progress-header {
 
@@ -487,23 +570,18 @@ button:hover {
 
 }
 
-.progress-bar-wrap {
-
-  width: 100%;
-
-}
-
 .progress-bar {
 
   width: 100%;
 
   height: 14px;
 
-  background: rgba(255,255,255,0.04);
-
   border-radius: 999px;
 
   overflow: hidden;
+
+  background:
+    rgba(255,255,255,0.04);
 
 }
 
@@ -513,14 +591,17 @@ button:hover {
 
   height: 100%;
 
+  border-radius: 999px;
+
   background:
     linear-gradient(
       90deg,
       var(--accent),
-      #f7d67a
+      #f4d783
     );
 
-  transition: width 0.4s ease;
+  transition:
+    width 0.35s ease;
 
 }
 
@@ -542,26 +623,38 @@ button:hover {
 ========================= */
 .card {
 
-  background: var(--card);
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.02),
+      rgba(255,255,255,0.01)
+    ),
+    var(--card);
 
   border:
     1px solid rgba(255,255,255,0.05);
 
-  border-radius: 22px;
+  border-radius: 24px;
 
   padding: 24px;
 
-  transition: 0.35s ease;
-
-  position: relative;
-
-  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
 
 }
 
 .card:hover {
 
-  transform: translateY(-3px);
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(201,162,78,0.18);
 
 }
 
@@ -586,13 +679,66 @@ button:hover {
 
 }
 
+/* =========================
+   CARD TOP
+========================= */
+.card-top {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 18px;
+
+}
+
+.card-badge {
+
+  background:
+    rgba(201,162,78,0.12);
+
+  color:
+    var(--accent);
+
+  border:
+    1px solid rgba(201,162,78,0.14);
+
+  border-radius: 999px;
+
+  padding:
+    7px
+    12px;
+
+  font-size: 11px;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+
+}
+
+.card-time {
+
+  color: var(--muted);
+
+  font-size: 12px;
+
+}
+
+/* =========================
+   CARD TEXT
+========================= */
 .card h2 {
 
   color: var(--accent);
 
-  margin-bottom: 8px;
+  font-size: 26px;
 
-  font-size: 24px;
+  margin-bottom: 8px;
 
 }
 
@@ -600,19 +746,67 @@ button:hover {
 
   color: var(--muted);
 
-  margin-bottom: 18px;
-
   font-size: 13px;
+
+  margin-bottom: 20px;
 
 }
 
-.card p {
+.story-block p {
+
+  line-height: 2;
+
+  color: #edf1f4;
+
+  font-size: 15px;
+
+}
+
+/* =========================
+   LESSON BLOCK
+========================= */
+.lesson-block,
+.psych-block {
+
+  margin-top: 24px;
+
+  padding-top: 18px;
+
+  border-top:
+    1px solid rgba(255,255,255,0.05);
+
+}
+
+.lesson-block h5,
+.psych-block h5 {
+
+  color: var(--accent);
+
+  margin-bottom: 12px;
+
+  font-size: 14px;
+
+}
+
+.lesson-block ul {
+
+  padding-left: 18px;
 
   line-height: 1.9;
 
-  color: #e4e7ea;
+  color: var(--muted);
 
-  font-size: 15px;
+  font-size: 14px;
+
+}
+
+.psych-block p {
+
+  color: #dfe4e8;
+
+  line-height: 1.9;
+
+  font-size: 14px;
 
 }
 
@@ -621,13 +815,32 @@ button:hover {
 ========================= */
 .locked {
 
-  filter: blur(6px);
+  filter:
+    blur(6px);
 
-  opacity: 0.45;
+  opacity: 0.42;
 
   pointer-events: none;
 
   user-select: none;
+
+}
+
+.locked-content {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 180px;
+
+  color: var(--accent);
+
+  font-size: 18px;
+
+  font-weight: 700;
 
 }
 
@@ -640,48 +853,51 @@ button:hover {
 
   inset: 0;
 
-  background:
-    rgba(0,0,0,0.84);
-
   display: none;
 
   justify-content: center;
 
   align-items: center;
 
+  padding: 20px;
+
+  background:
+    rgba(0,0,0,0.86);
+
   z-index: 999;
 
-  padding: 20px;
+  backdrop-filter:
+    blur(10px);
 
 }
 
 .lock-box {
 
   width: 100%;
+  max-width: 460px;
 
-  max-width: 440px;
-
-  background: var(--panel);
+  background:
+    var(--panel);
 
   border:
     1px solid rgba(255,255,255,0.06);
 
-  border-radius: 24px;
+  border-radius: 28px;
 
   padding: 34px;
 
   text-align: center;
 
   box-shadow:
-    0 30px 60px rgba(0,0,0,0.4);
+    0 30px 70px rgba(0,0,0,0.4);
 
 }
 
 .lock-icon {
 
-  font-size: 48px;
+  font-size: 52px;
 
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 
 }
 
@@ -697,19 +913,20 @@ button:hover {
 
   color: var(--muted);
 
-  line-height: 1.7;
+  line-height: 1.8;
 
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 
 }
 
 .lock-meta {
 
-  color: rgba(255,255,255,0.35);
+  color:
+    rgba(255,255,255,0.34);
 
-  font-size: 12px;
+  font-size: 11px;
 
-  letter-spacing: 1px;
+  letter-spacing: 1.3px;
 
   text-transform: uppercase;
 
@@ -720,11 +937,12 @@ button:hover {
 ========================= */
 .footer {
 
-  margin-top: 40px;
+  margin-top: 42px;
 
   text-align: center;
 
-  color: rgba(255,255,255,0.4);
+  color:
+    rgba(255,255,255,0.4);
 
   font-size: 12px;
 
@@ -758,7 +976,13 @@ button:hover {
 
   .card h2 {
 
-    font-size: 20px;
+    font-size: 22px;
+
+  }
+
+  .story-block p {
+
+    line-height: 1.9;
 
   }
 
