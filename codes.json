@@ -1,210 +1,40 @@
 {
-  "brand": "WARD EXPERIENCES™",
+  "meta": {
+    "system": "WARD EXPERIENCES™ Gatekeeper Access System",
+    "version": "3.0",
+    "mode": "single_gatekeeper_unlock",
+    "description": "Central access control for clinical archive system"
+  },
 
-  "version": "4.0",
-
-  "description": "Clinical memory archive built as a psychological flashcard reading system.",
-
-  "cards": [
-
-    {
-      "id": 1,
-
-      "ward": "Female Medical Ward",
-
-      "time": "7:12 AM",
-
-      "title": "The First Patient I Ever Touched",
-
-      "subtitle": "The moment clinical work stopped feeling theoretical.",
-
-      "content": {
-
-        "story": "The gloves felt thinner than I expected.\n\nThat was the first thing I noticed.\n\nNot the smell of disinfectant.\nNot the sound of metal trolleys moving across the floor.\nNot even the nervousness sitting in my chest like trapped heat.\n\nThe gloves.\nTransparent. Fragile.\n\nThe nurse beside me spoke calmly.\n\n“Go ahead. Check her pulse.”\n\nI nodded too quickly.\n\nThe patient was older. Quiet. Watching me carefully.\n\nMy fingers shook slightly as I touched her wrist.\n\nNothing in textbooks prepares you for the moment another human being silently trusts you with their body.\n\nI couldn’t find the pulse immediately.\n\nPanic.\n\nMy mind emptied.\n\nI tried again.\nStill nothing.\n\nThe nurse leaned closer.\n\n“Relax your fingers. Don’t press too hard.”\n\nAnd suddenly — there it was.\nWeak. Rhythmic. Human.\n\nThat was the moment clinical work stopped feeling theoretical.\n\nThe patient smiled faintly.\n\nI never forgot that smile.",
-
-        "clinical_lessons": [
-
-          "Anxiety affects practical accuracy.",
-
-          "Patients observe confidence closely.",
-
-          "Gentle pressure improves pulse assessment.",
-
-          "Calm correction from seniors matters."
-
-        ],
-
-        "psychological_insight": "The fear of harming patients is normal during early clinical exposure. Confidence develops through repetition — not imagination."
-
-      }
-
+  "gatekeeper": {
+    "identity": {
+      "label": "Primary Gatekeeper",
+      "code": "WARD-ACCESS-2026",
+      "status": "active"
     },
 
-    {
-      "id": 2,
-
-      "ward": "Male Ward",
-
-      "time": "10:48 AM",
-
-      "title": "The Silence After Ward Round",
-
-      "subtitle": "Authority changes the psychology of every room.",
-
-      "content": {
-
-        "story": "Before the consultants arrived, the ward felt alive.\n\nStudents whispered revisions to each other.\nFiles moved between hands.\nSomeone adjusted bed sheets nervously.\n\nThen the ward round started.\n\nAnd everything changed.\n\nThe silence became heavy.\n\nThe consultant moved quickly from bed to bed, asking questions that felt sharper than surgical blades.\n\n“What’s the patient’s diagnosis?”\n“Why was this medication prescribed?”\n“What danger signs are you monitoring?”\n\nI realized something important that morning:\n\nWard rounds are not just about knowledge.\n\nThey are about composure under observation.\n\nOne student answered confidently but incorrectly.\nAnother knew the answer but froze completely.\nA nurse quietly corrected a dosage error before it became embarrassing.\n\nNobody laughed.\n\nBecause everyone understood the pressure.\n\nAfter the consultants left, the ward slowly breathed again.\n\nThat was the first time I understood how healthcare environments change psychologically when authority enters the room.",
-
-        "clinical_lessons": [
-
-          "Ward rounds test thinking under pressure.",
-
-          "Preparation reduces visible anxiety.",
-
-          "Observation skills matter as much as memorization.",
-
-          "Senior nurses often prevent avoidable mistakes."
-
-        ],
-
-        "psychological_insight": "Clinical confidence is not loudness. It is calm accuracy."
-
-      }
-
+    "security": {
+      "device_binding": true,
+      "single_use": false,
+      "max_attempts_per_session": 5,
+      "cooldown_seconds": 0
     },
 
-    {
-      "id": 3,
-
-      "ward": "Surgical Ward",
-
-      "time": "9:34 AM",
-
-      "title": "The Day I Forgot Infection Control",
-
-      "subtitle": "Embarrassment in training is temporary. Unsafe habits are not.",
-
-      "content": {
-
-        "story": "It happened fast.\nToo fast.\n\nThe dressing tray had already been prepared.\nThe nurse was explaining the procedure.\nEveryone was moving efficiently.\n\nI stepped closer automatically.\n\nAnd touched the trolley without gloves.\n\nThe nurse stopped immediately.\n\nNot aggressively.\nJust firmly.\n\n“Start again.”\n\nMy chest tightened instantly.\n\nI felt embarrassed before anyone even reacted.\n\nBut the correction mattered.\n\nBecause clinical mistakes become dangerous when people are too proud to correct them.\n\nThat small moment permanently changed how seriously I approached infection prevention.",
-
-        "clinical_lessons": [
-
-          "Small lapses can create contamination risks.",
-
-          "Clinical environments require constant awareness.",
-
-          "Immediate correction prevents escalation.",
-
-          "Discipline protects patients."
-
-        ],
-
-        "psychological_insight": "Embarrassment during clinical training can become one of the strongest teachers in professional development."
-
+    "access": {
+      "type": "full_archive",
+      "unlock_limit": 9999,
+      "unlock_behavior": "instant_full_access",
+      "plan": {
+        "name": "Full Clinical Archive Access",
+        "tier": "elite"
       }
-
     },
 
-    {
-      "id": 4,
-
-      "ward": "Emergency Unit",
-
-      "time": "2:16 PM",
-
-      "title": "The Oxygen Mask",
-
-      "subtitle": "Panic spreads faster than disease inside emergencies.",
-
-      "content": {
-
-        "story": "The patient arrived breathless.\n\nThe room changed immediately.\n\nConversations stopped.\nMonitors activated.\nThe atmosphere sharpened.\n\nI stood near the corner trying not to obstruct anyone.\n\nA nurse handed me the oxygen mask.\n\n“Hold this properly.”\n\nSimple instruction.\n\nBut my hands suddenly felt too slow.\n\nThe patient’s chest moved rapidly.\nThe family members watched anxiously.\n\nEverything around me became louder.\n\nThat was when I realized something dangerous about emergency environments:\n\nFear is contagious.\n\nIf one healthcare worker loses composure, the entire room feels it.\n\nThe senior doctor remained calm throughout the entire situation.\n\nShort instructions.\nControlled voice.\nMinimal panic.\n\nThat calmness stabilized everyone else.\n\nIncluding me.",
-
-        "clinical_lessons": [
-
-          "Emergency care depends heavily on composure.",
-
-          "Clear instructions reduce chaos.",
-
-          "Body language affects team confidence.",
-
-          "Patients observe emotional stability."
-
-        ],
-
-        "psychological_insight": "Professional calmness is a clinical skill — not a personality trait."
-
-      }
-
-    },
-
-    {
-      "id": 5,
-
-      "ward": "Pediatric Ward",
-
-      "time": "11:03 AM",
-
-      "title": "The Child Who Refused Medication",
-
-      "subtitle": "Children react more to energy than explanations.",
-
-      "content": {
-
-        "story": "The little boy crossed his arms immediately.\n\n“No.”\n\nThe medication cup remained untouched.\n\nHis mother looked exhausted.\nThe nurse sighed quietly.\n\nAnother student attempted persuasion using long explanations.\n\nIt failed.\n\nThen an older nurse crouched beside him.\n\nShe smiled.\n\nAsked about cartoons.\nAsked about school.\nAsked about football.\n\nWithin minutes, the boy relaxed.\n\nThen he drank the medication.\n\nI learned something important that day:\n\nPatient management is not always about forceful authority.\n\nSometimes communication itself becomes treatment.",
-
-        "clinical_lessons": [
-
-          "Pediatric communication differs from adult communication.",
-
-          "Trust improves treatment cooperation.",
-
-          "Observation of senior nurses is valuable.",
-
-          "Emotional intelligence improves compliance."
-
-        ],
-
-        "psychological_insight": "Patients often respond more to emotional atmosphere than medical terminology."
-
-      }
-
-    },
-
-    {
-      "id": 6,
-
-      "ward": "Night Duty",
-
-      "time": "1:42 AM",
-
-      "title": "The Weight of Night Shift",
-
-      "subtitle": "Hospitals feel psychologically different after midnight.",
-
-      "content": {
-
-        "story": "The corridors became quieter after midnight.\n\nMachines sounded louder.\nFootsteps echoed longer.\nEven conversations felt softer.\n\nFatigue slowly affected everyone.\n\nOne nurse rubbed her eyes repeatedly.\nAnother checked medication charts twice.\n\nI realized something that night:\n\nClinical errors become more dangerous when exhaustion combines with routine.\n\nNight duty revealed a hidden side of healthcare.\n\nThe emotional cost.\n\nNot just physical tiredness.\nMental fatigue.\nReduced attention.\nSilent stress.\n\nYet the work continued.\n\nPatients still needed monitoring.\nMedications still needed administration.\n\nIllness does not sleep.",
-
-        "clinical_lessons": [
-
-          "Fatigue increases clinical risk.",
-
-          "Double-checking becomes more important at night.",
-
-          "Night shifts require mental discipline.",
-
-          "Team communication prevents avoidable errors."
-
-        ],
-
-        "psychological_insight": "Healthcare resilience is often built quietly during exhausting routines nobody celebrates."
-
-      }
-
+    "experience_rules": {
+      "allow_preview": true,
+      "preview_limit": 2,
+      "soft_unlock_enabled": true,
+      "paywall_trigger": "engagement_based"
     }
-
-  ]
-
+  }
 }
