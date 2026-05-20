@@ -3,364 +3,320 @@
 
 <head>
 
-  <!-- =========================
-       META
-  ========================== -->
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#090b10"
-  >
+  />
 
   <title>WARD EXPERIENCES™</title>
 
-  <!-- =========================
-       CSS
-  ========================== -->
+  <meta
+    name="description"
+    content="Clinical memory archive built as a psychological flashcard reading system."
+  />
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-  <!-- =========================
-       MAIN APPLICATION
-  ========================== -->
-  <div class="app">
+  <!-- AMBIENT BACKGROUND -->
+  <div class="ambient-bg"></div>
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-    <header class="header">
+  <div class="grid-overlay"></div>
 
-      <div class="header-top">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
 
-        <span class="badge">
-          Clinical Archive System
-        </span>
+  <!-- MAIN APP -->
+  <main class="app">
+
+    <!-- HERO -->
+    <section class="hero">
+
+      <div class="hero-top">
+
+        <div class="system-pill">
+          Clinical Memory Archive
+        </div>
+
+        <div class="version-pill">
+          v4.0
+        </div>
 
       </div>
 
-      <h1>
+      <h1 class="hero-title">
         WARD EXPERIENCES™
       </h1>
 
-      <p class="sub">
-        Real Clinical Encounters • Psychological Imprints •
-        Medical Reality Flashcards
+      <p class="hero-description">
+        Clinical memory archive built as a psychological flashcard reading system.
       </p>
 
-    </header>
+      <!-- HERO STATS -->
+      <div class="hero-stats">
 
-    <!-- =========================
-         STATUS BAR
-    ========================== -->
-    <section class="status-bar">
+        <div class="stat-card">
 
-      <div class="status-item">
+          <span class="stat-number" id="totalExperiences">
+            0
+          </span>
 
-        <span class="label">
-          Access
-        </span>
+          <span class="stat-label">
+            Experiences
+          </span>
 
-        <span id="planLabel">
-          Restricted
-        </span>
+        </div>
 
-      </div>
+        <div class="stat-card">
 
-      <div class="status-item">
+          <span class="stat-number">
+            6
+          </span>
 
-        <span class="label">
-          Archive State
-        </span>
+          <span class="stat-label">
+            Wards
+          </span>
 
-        <span id="unlockCount">
-          Locked
-        </span>
+        </div>
 
-      </div>
+        <div class="stat-card">
 
-      <div class="status-item">
+          <span class="stat-number">
+            LIVE
+          </span>
 
-        <span class="label">
-          Reads
-        </span>
+          <span class="stat-label">
+            Archive
+          </span>
 
-        <span id="readCount">
-          0
-        </span>
+        </div>
 
       </div>
 
     </section>
 
-    <!-- =========================
-         DEVICE IDENTITY
-    ========================== -->
-    <section class="device-box">
+    <!-- ARCHIVE NAV -->
+    <section class="archive-nav">
 
-      <div class="section-title-wrap">
+      <div class="archive-heading">
 
-        <h3>
-          Device Identity
-        </h3>
+        <h2>
+          Clinical Experience Archive
+        </h2>
 
-        <p class="section-sub">
-          Required for archive verification and
-          Gatekeeper authorization
+        <p>
+          Real ward moments. Psychological pressure. Emotional clinical exposure.
         </p>
 
       </div>
 
-      <div class="device-id-wrap">
+      <!-- FILTERS -->
+      <div class="filters">
 
-        <div
-          class="device-id"
-          id="deviceIDBox"
-        >
-          Initializing Device...
-        </div>
+        <button class="filter-btn active" data-filter="all">
+          All Wards
+        </button>
 
-        <button onclick="copyDeviceID()">
-          Copy Device Identity
+        <button class="filter-btn" data-filter="Female Medical Ward">
+          Female Ward
+        </button>
+
+        <button class="filter-btn" data-filter="Male Ward">
+          Male Ward
+        </button>
+
+        <button class="filter-btn" data-filter="Surgical Ward">
+          Surgical
+        </button>
+
+        <button class="filter-btn" data-filter="Emergency Unit">
+          Emergency
+        </button>
+
+        <button class="filter-btn" data-filter="Pediatric Ward">
+          Pediatric
+        </button>
+
+        <button class="filter-btn" data-filter="Night Duty">
+          Night Duty
         </button>
 
       </div>
 
     </section>
 
-    <!-- =========================
-         PAYMENT SECTION
-    ========================== -->
-    <section class="payment-box">
+    <!-- LOADING -->
+    <section class="loader-screen" id="loaderScreen">
 
-      <div class="section-title-wrap">
+      <div class="loader-ring"></div>
 
-        <h3>
-          Archive Access Payment
-        </h3>
-
-        <p class="section-sub">
-          Complete payment and submit verification
-          through WhatsApp support
-        </p>
-
-      </div>
-
-      <!-- BANK CARD -->
-      <div class="bank-card">
-
-        <div class="bank-line">
-
-          <span class="bank-label">
-            Bank
-          </span>
-
-          <span class="bank-value">
-            Smartcash
-          </span>
-
-        </div>
-
-        <div class="bank-line">
-
-          <span class="bank-label">
-            Account Name
-          </span>
-
-          <span class="bank-value">
-            Abubakar Haruna
-          </span>
-
-        </div>
-
-        <div class="bank-line">
-
-          <span class="bank-label">
-            Account Number
-          </span>
-
-          <span class="bank-value">
-            8122382332
-          </span>
-
-        </div>
-
-      </div>
-
-      <!-- INSTRUCTIONS -->
-      <div class="instruction-box">
-
-        <h4>
-          Verification Flow
-        </h4>
-
-        <ol>
-
-          <li>
-            Complete payment transfer
-          </li>
-
-          <li>
-            Take screenshot of transaction
-          </li>
-
-          <li>
-            Copy your Device Identity
-          </li>
-
-          <li>
-            Send screenshot + Device Identity
-            to WhatsApp support
-          </li>
-
-          <li>
-            Receive Gatekeeper Code
-          </li>
-
-        </ol>
-
-      </div>
+      <p>
+        Loading clinical archive...
+      </p>
 
     </section>
 
-    <!-- =========================
-         GATEKEEPER ACCESS
-    ========================== -->
-    <section class="unlock-box">
+    <!-- EMPTY STATE -->
+    <section class="empty-state hidden" id="emptyState">
 
-      <div class="unlock-header">
-
-        <div class="gatekeeper-badge">
-          Restricted Archive
-        </div>
-
-        <h3>
-          Gatekeeper Access
-        </h3>
-
-        <p class="unlock-sub">
-
-          This archive contains protected
-          clinical experiences.
-
-          Enter authorized Gatekeeper Code
-          to unlock the complete
-          Ward Experiences™ collection.
-
-        </p>
-
+      <div class="empty-icon">
+        ⌁
       </div>
 
-      <!-- INPUT GROUP -->
-      <div class="unlock-input-group">
+      <h3>
+        No experiences found
+      </h3>
 
-        <input
-          type="password"
-          id="codeInput"
-          class="unlock-input"
-          placeholder="ENTER GATEKEEPER CODE"
-          autocomplete="off"
-          spellcheck="false"
-        >
-
-        <button
-          class="unlock-btn"
-          onclick="unlockContent()"
-        >
-          Unlock Full Archive
-        </button>
-
-      </div>
-
-      <!-- STATUS -->
-      <div class="unlock-status-wrap">
-
-        <p id="status">
-          Awaiting authorized Gatekeeper access...
-        </p>
-
-      </div>
+      <p>
+        Try changing the archive filter.
+      </p>
 
     </section>
 
-    <!-- =========================
-         READING PROGRESS
-    ========================== -->
-    <section class="progress-section">
+    <!-- CARD GRID -->
+    <section
+      class="cards-grid"
+      id="cardsContainer"
+    >
 
-      <div class="progress-header">
+      <!-- app.js injects cards here -->
 
-        <h3>
-          Archive Progress
-        </h3>
+    </section>
 
-        <span id="progressPercent">
-          0%
-        </span>
+    <!-- FOOTER -->
+    <footer class="footer">
+
+      <div class="footer-content">
+
+        <div class="footer-brand">
+
+          <h3>
+            WARD EXPERIENCES™
+          </h3>
+
+          <p>
+            Clinical exposure changes students psychologically before it changes them professionally.
+          </p>
+
+        </div>
+
+        <div class="footer-system">
+
+          <span>
+            Clinical Archive System
+          </span>
+
+          <span>
+            Psychological Flashcard Reader
+          </span>
+
+        </div>
 
       </div>
 
-      <div class="progress-bar-wrap">
+    </footer>
 
-        <div class="progress-bar">
+  </main>
+
+  <!-- EXPERIENCE MODAL -->
+  <div class="modal hidden" id="experienceModal">
+
+    <!-- BACKDROP -->
+    <div
+      class="modal-backdrop"
+      id="modalBackdrop"
+    ></div>
+
+    <!-- CONTENT -->
+    <div class="modal-content">
+
+      <!-- CLOSE -->
+      <button
+        class="close-modal"
+        id="closeModal"
+      >
+        ×
+      </button>
+
+      <!-- SCROLL AREA -->
+      <div class="modal-scroll">
+
+        <!-- TOP -->
+        <div class="modal-top">
+
+          <div class="modal-meta">
+
+            <span id="modalWard">
+              Ward
+            </span>
+
+            <span id="modalTime">
+              00:00
+            </span>
+
+          </div>
+
+          <h2 id="modalTitle">
+            Experience Title
+          </h2>
+
+          <p id="modalSubtitle">
+            Subtitle
+          </p>
+
+        </div>
+
+        <!-- STORY -->
+        <div class="modal-section">
+
+          <div class="section-label">
+            Clinical Story
+          </div>
 
           <div
-            class="progress-fill"
-            id="progressFill"
+            class="story-content"
+            id="modalStory"
           ></div>
 
         </div>
 
-      </div>
+        <!-- LESSONS -->
+        <div class="modal-section">
 
-    </section>
+          <div class="section-label">
+            Clinical Lessons
+          </div>
 
-    <!-- =========================
-         FLASHCARD CONTAINER
-    ========================== -->
-    <main id="card-container">
+          <ul
+            class="lessons-list"
+            id="modalLessons"
+          ></ul>
 
-      <!-- FLASHCARDS INJECTED BY JS -->
-
-    </main>
-
-    <!-- =========================
-         LOCK OVERLAY
-    ========================== -->
-    <div
-      id="lockOverlay"
-      class="lock-overlay"
-    >
-
-      <div class="lock-box">
-
-        <div class="lock-icon">
-          🔒
         </div>
 
-        <h2>
-          Restricted Clinical Archive
-        </h2>
+        <!-- INSIGHT -->
+        <div class="modal-section insight-box">
 
-        <p>
+          <div class="section-label">
+            Psychological Insight
+          </div>
 
-          Additional clinical experiences
-          require authorized Gatekeeper access.
-
-        </p>
-
-        <div class="lock-meta">
-
-          Psychological Clinical Memory System
-          • Protected Access Layer
+          <p id="modalInsight"></p>
 
         </div>
 
@@ -368,27 +324,20 @@
 
     </div>
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
-    <footer class="footer">
-
-      <p>
-        WARD EXPERIENCES™ • Clinical Archive System
-      </p>
-
-    </footer>
-
   </div>
 
-  <!-- =========================
-       STORAGE ENGINE
-  ========================== -->
-  <script src="storage.js"></script>
+  <!-- NO SCRIPT -->
+  <noscript>
 
-  <!-- =========================
-       MAIN ENGINE
-  ========================== -->
+    <div class="noscript-warning">
+
+      JavaScript is required to load the clinical archive.
+
+    </div>
+
+  </noscript>
+
+  <!-- SCRIPT -->
   <script src="app.js"></script>
 
 </body>
