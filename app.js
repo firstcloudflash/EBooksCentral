@@ -1,353 +1,643 @@
 /* =========================================================
    WARD EXPERIENCES™
-   Clinical Archive Engine v5 (ELITE SYSTEM)
+   Clinical Archive Engine v5
 ========================================================= */
 
 /* =========================
    GLOBAL STATE
 ========================= */
 
-let cardsData = [];
+let archiveData = null;
 
-let reads = StorageEngine.getReads();
-let deviceID = StorageEngine.getDeviceID();
-let accessPlan = StorageEngine.getAccessPlan();
+let cards = [];
 
-let previewLimit = 2;
-
-let fullUnlock = false;
-
-let softGateTriggered = false;
-let paywallShown = false;
-
-let emotionalScore = 0;
-let sessionTime = 0;
-let scrollDepth = 0;
+let activeFilter = "All Wards";
 
 /* =========================
-   INIT
+   DOM ELEMENTS
 ========================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  initializeSystem();
-});
+const cardsContainer =
+  document.getElementById("cardsContainer");
 
-async function initializeSystem() {
-  initializeDevice();
-  updateStatusBar();
-  attachTracking();
-  await loadContent();
-  restoreSession();
+const loaderScreen =
+  document.getElementById("loaderScreen");
+
+const emptyState =
+  document.getElementById("emptyState");
+
+const totalExperiences =
+  document.getElementById("totalExperiences");
+
+const filterButtons =
+  document.querySelectorAll(".filter-btn");
+
+/* =========================
+   MODAL ELEMENTS
+========================= */
+
+const modal =
+  document.getElementById("experienceModal");
+
+const modalBackdrop =
+  document.getElementById("modalBackdrop");
+
+const closeModalBtn =
+  document.getElementById("closeModal");
+
+const modalWard =
+  document.getElementById("modalWard");
+
+const modalTime =
+  document.getElementById("modalTime");
+
+const modalTitle =
+  document.getElementById("modalTitle");
+
+const modalSubtitle =
+  document.getElementById("modalSubtitle");
+
+const modalStory =
+  document.getElementById("modalStory");
+
+const modalLessons =
+  document.getElementById("modalLessons");
+
+const modalInsight =
+  document.getElementById("modalInsight");
+
+/* =========================
+   INITIALIZE
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initializeArchive
+);
+
+/* =========================
+   INITIALIZER
+========================= */
+
+async function initializeArchive() {
+
+  initializeEffects();
+
+  initializeFilters();
+
+  await loadArchive();
+
 }
 
 /* =========================
-   DEVICE
+   LOAD ARCHIVE
 ========================= */
 
-function initializeDevice() {
-  if (!deviceID) {
-    deviceID = generateDeviceID();
-    StorageEngine.setDeviceID(deviceID);
-  }
+async function loadArchive() {
 
-  const box = document.getElementById("deviceIDBox");
-  if (box) box.innerText = deviceID;
-}
-
-function generateDeviceID() {
-  return `WARD-${Math.random()
-    .toString(36)
-    .substring(2, 10)
-    .toUpperCase()}`;
-}
-
-/* =========================
-   CONTENT LOADING
-========================= */
-
-async function loadContent() {
   try {
-    const res = await fetch("content.json");
-    const json = await res.json();
 
-    cardsData = json.cards || [];
+    const response =
+      await fetch("content.json");
 
-    renderCards();
-    updateStatusBar();
-    updateProgress();
-    updateLockState();
-  } catch (err) {
-    console.error("Content load failed:", err);
+    archiveData =
+      await response.json();
+
+    cards =
+      archiveData.cards || [];
+
+    updateStats();
+
+    renderCards(cards);
+
+    hideLoader();
+
   }
+
+  catch (error) {
+
+    console.error(
+      "Archive failed to load:",
+      error
+    );
+
+    showArchiveError();
+
+  }
+
 }
 
 /* =========================
-   RENDER SYSTEM (MEDIUM STYLE)
+   UPDATE STATS
 ========================= */
 
-function renderCards() {
-  const container = document.getElementById("card-container");
-  if (!container) return;
+function updateStats() {
 
-  container.innerHTML = "";
+  if (totalExperiences) {
 
-  cardsData.forEach((card, index) => {
-    let state = "free";
+    totalExperiences.textContent =
+      cards.length;
 
-    if (index >= previewLimit && !fullUnlock) {
-      state = "teaser";
-    }
+  }
 
-    const el = document.createElement("div");
-    el.className = `card ${state}`;
+}
 
-    const lessonsHTML = card.content.clinical_lessons
-      .map(l => `<li>${l}</li>`)
-      .join("");
+/* =========================
+   INITIALIZE FILTERS
+========================= */
 
-    el.innerHTML = `
-      <div class="card-top">
-        <div class="card-badge">${card.ward}</div>
-        <div class="card-time">${card.time}</div>
-      </div>
+function initializeFilters() {
 
-      <h2>${card.title}</h2>
-      <h4>${card.subtitle}</h4>
+  filterButtons.forEach((button) => {
 
-      ${
-        state === "free" || fullUnlock
-          ? `
-            <div class="story-block">
-              <p>${card.content.story}</p>
-            </div>
+    button.addEventListener(
+      "click",
+      () => {
 
-            <div class="lesson-block">
-              <h5>Clinical Lessons</h5>
-              <ul>${lessonsHTML}</ul>
-            </div>
+        filterButtons.forEach((btn) => {
 
-            <div class="psych-block">
-              <h5>Psychological Insight</h5>
-              <p>${card.content.psychological_insight}</p>
-            </div>
-          `
-          : `
-            <div class="teaser-block">
-              🔒 Continue reading unlocks deeper clinical layers
-            </div>
-          `
+          btn.classList.remove("active");
+
+        });
+
+        button.classList.add("active");
+
+        activeFilter =
+          button.dataset.filter;
+
+        filterCards();
+
       }
-    `;
+    );
 
-    container.appendChild(el);
-  });
-}
-
-/* =========================
-   TRACKING ENGINE
-========================= */
-
-function attachTracking() {
-  let start = Date.now();
-
-  window.addEventListener("scroll", () => {
-    scrollDepth =
-      window.scrollY / document.body.scrollHeight;
   });
 
-  setInterval(() => {
-    sessionTime = Date.now() - start;
-    reads++;
-    StorageEngine.incrementReads();
-
-    updateEmotionalScore();
-    updateStatusBar();
-  }, 2000);
 }
 
 /* =========================
-   EMOTIONAL ENGINE
+   FILTER CARDS
 ========================= */
 
-function updateEmotionalScore() {
-  emotionalScore = 0;
+function filterCards() {
 
-  emotionalScore += reads * 2;
-  emotionalScore += sessionTime / 10000;
-  emotionalScore += scrollDepth * 10;
+  if (activeFilter === "All Wards") {
 
-  triggerSystemChecks();
+    renderCards(cards);
+
+    return;
+
+  }
+
+  const filteredCards =
+    cards.filter((card) => {
+
+      return card.ward === activeFilter;
+
+    });
+
+  renderCards(filteredCards);
+
 }
 
 /* =========================
-   TRIGGER SYSTEM
+   RENDER CARDS
 ========================= */
 
-function triggerSystemChecks() {
-  if (!softGateTriggered && emotionalScore > 5) {
-    triggerSoftGate();
+function renderCards(data) {
+
+  cardsContainer.innerHTML = "";
+
+  if (!data.length) {
+
+    showEmptyState();
+
+    return;
+
   }
 
-  if (!paywallShown && emotionalScore > 12) {
-    triggerPaywallMoment();
-  }
+  hideEmptyState();
 
-  if (emotionalScore > 20) {
-    triggerHardGate();
-  }
+  data.forEach((card, index) => {
+
+    const cardElement =
+      createCard(card, index);
+
+    cardsContainer.appendChild(
+      cardElement
+    );
+
+  });
+
 }
 
 /* =========================
-   SOFT GATE
+   CREATE CARD
 ========================= */
 
-function triggerSoftGate() {
-  softGateTriggered = true;
+function createCard(card, index) {
 
-  const status = document.getElementById("status");
+  const article =
+    document.createElement("article");
 
-  if (status) {
-    status.innerText =
-      "You are entering deeper clinical layers. Some experiences may soon require Gatekeeper access.";
-  }
-}
+  article.className = "card";
 
-/* =========================
-   PAYWALL MOMENT (ELITE)
-========================= */
+  article.style.animationDelay =
+    `${index * 0.06}s`;
 
-function triggerPaywallMoment() {
-  paywallShown = true;
+  article.innerHTML = `
 
-  const overlay = document.getElementById("lockOverlay");
+    <div class="card-top">
 
-  if (!overlay) return;
+      <span class="card-badge">
+        ${card.ward}
+      </span>
 
-  overlay.innerHTML = `
-    <div class="lock-box">
-
-      <div class="lock-icon">🧠</div>
-
-      <h2>Depth Threshold Reached</h2>
-
-      <p>
-        You’ve engaged deeply with this clinical archive.
-        Continue requires Gatekeeper verification.
-      </p>
-
-      <input
-        type="password"
-        id="codeInput"
-        class="unlock-input"
-        placeholder="Enter Gatekeeper Code"
-      >
-
-      <button class="unlock-btn" onclick="unlockContent()">
-        Continue Experience
-      </button>
+      <span class="card-time">
+        ${card.time}
+      </span>
 
     </div>
+
+    <h2>
+      ${card.title}
+    </h2>
+
+    <h4>
+      ${card.subtitle}
+    </h4>
+
+    <div class="story-block">
+
+      <p>
+        ${truncateStory(
+          card.content.story,
+          260
+        )}
+      </p>
+
+    </div>
+
+    <div class="lesson-block">
+
+      <h5>
+        Clinical Lessons
+      </h5>
+
+      <ul>
+
+        ${card.content.clinicalLessons
+          .slice(0, 2)
+          .map(
+            (lesson) => `
+              <li>${lesson}</li>
+            `
+          )
+          .join("")}
+
+      </ul>
+
+    </div>
+
+    <div class="psych-block">
+
+      <h5>
+        Psychological Insight
+      </h5>
+
+      <p>
+        ${card.content.psychologicalInsight}
+      </p>
+
+    </div>
+
   `;
 
-  overlay.style.display = "flex";
+  article.addEventListener(
+    "click",
+    () => openModal(card)
+  );
+
+  return article;
+
 }
 
 /* =========================
-   HARD GATE
+   TRUNCATE STORY
 ========================= */
 
-function triggerHardGate() {
-  const overlay = document.getElementById("lockOverlay");
-  if (overlay) overlay.style.display = "flex";
-}
+function truncateStory(text, limit) {
 
-/* =========================
-   UNLOCK SYSTEM
-========================= */
+  if (text.length <= limit) {
 
-async function unlockContent() {
-  const input = document
-    .getElementById("codeInput")
-    .value
-    .trim()
-    .toUpperCase();
+    return formatParagraphs(text);
 
-  const res = await fetch("codes.json");
-  const data = await res.json();
-
-  const gatekeeper = data.gatekeeper;
-
-  if (input === gatekeeper.code) {
-    fullUnlock = true;
-    previewLimit = 9999;
-
-    accessPlan = "Elite Clinical Access";
-
-    StorageEngine.setActiveCode(gatekeeper.code);
-    StorageEngine.setAccessPlan(accessPlan);
-
-    renderCards();
-    updateStatusBar();
-
-    document.getElementById("status").innerText =
-      "Access granted. Full clinical archive unlocked.";
-
-  } else {
-    document.getElementById("status").innerText =
-      "Invalid Gatekeeper Code.";
   }
+
+  return (
+    formatParagraphs(
+      text.substring(0, limit)
+    ) + "..."
+  );
+
 }
 
 /* =========================
-   SESSION RESTORE
+   FORMAT PARAGRAPHS
 ========================= */
 
-function restoreSession() {
-  const active = StorageEngine.getActiveCode();
+function formatParagraphs(text) {
 
-  if (active) {
-    fullUnlock = true;
-    previewLimit = 9999;
-    accessPlan = "Elite Clinical Access";
+  return text.replace(/\n/g, "<br>");
+
+}
+
+/* =========================
+   OPEN MODAL
+========================= */
+
+function openModal(card) {
+
+  modal.classList.remove("hidden");
+
+  document.body.style.overflow =
+    "hidden";
+
+  modalWard.textContent =
+    card.ward;
+
+  modalTime.textContent =
+    card.time;
+
+  modalTitle.textContent =
+    card.title;
+
+  modalSubtitle.textContent =
+    card.subtitle;
+
+  modalStory.innerHTML =
+    formatParagraphs(
+      card.content.story
+    );
+
+  modalInsight.textContent =
+    card.content.psychologicalInsight;
+
+  modalLessons.innerHTML =
+    card.content.clinicalLessons
+      .map(
+        (lesson) =>
+          `<li>${lesson}</li>`
+      )
+      .join("");
+
+  requestAnimationFrame(() => {
+
+    modal.style.opacity = "1";
+
+  });
+
+}
+
+/* =========================
+   CLOSE MODAL
+========================= */
+
+function closeModal() {
+
+  modal.classList.add("hidden");
+
+  document.body.style.overflow =
+    "";
+
+}
+
+/* =========================
+   MODAL EVENTS
+========================= */
+
+closeModalBtn.addEventListener(
+  "click",
+  closeModal
+);
+
+modalBackdrop.addEventListener(
+  "click",
+  closeModal
+);
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+
+    if (
+      event.key === "Escape" &&
+      !modal.classList.contains("hidden")
+    ) {
+
+      closeModal();
+
+    }
+
   }
+);
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+function showEmptyState() {
+
+  emptyState.classList.remove(
+    "hidden"
+  );
+
+}
+
+function hideEmptyState() {
+
+  emptyState.classList.add(
+    "hidden"
+  );
+
 }
 
 /* =========================
-   STATUS BAR
+   LOADER
 ========================= */
 
-function updateStatusBar() {
-  const plan = document.getElementById("planLabel");
-  const unlock = document.getElementById("unlockCount");
-  const read = document.getElementById("readCount");
+function hideLoader() {
 
-  if (plan) plan.innerText = accessPlan || "Restricted";
-  if (unlock) unlock.innerText = fullUnlock ? "Unlocked" : "Reading Mode";
-  if (read) read.innerText = reads;
+  loaderScreen.style.display =
+    "none";
+
 }
 
 /* =========================
-   PROGRESS (SIMPLE)
+   ERROR STATE
 ========================= */
 
-function updateProgress() {
-  const fill = document.getElementById("progressFill");
-  const text = document.getElementById("progressPercent");
+function showArchiveError() {
 
-  let percent = fullUnlock ? 100 : 30;
+  loaderScreen.innerHTML = `
 
-  if (fill) fill.style.width = `${percent}%`;
-  if (text) text.innerText = `${percent}%`;
+    <div class="empty-icon">
+      ⚠
+    </div>
+
+    <h3>
+      Archive Failed To Load
+    </h3>
+
+    <p>
+      Please check your content.json file.
+    </p>
+
+  `;
+
 }
 
 /* =========================
-   LOCK STATE
+   EFFECTS
 ========================= */
 
-function updateLockState() {
-  const overlay = document.getElementById("lockOverlay");
+function initializeEffects() {
 
-  if (!overlay) return;
+  initializeCardReveal();
 
-  overlay.style.display = fullUnlock ? "none" : "flex";
+  initializeAmbientMovement();
+
 }
+
+/* =========================
+   CARD REVEAL
+========================= */
+
+function initializeCardReveal() {
+
+  const observer =
+    new IntersectionObserver(
+
+      (entries) => {
+
+        entries.forEach((entry) => {
+
+          if (entry.isIntersecting) {
+
+            entry.target.classList.add(
+              "visible"
+            );
+
+          }
+
+        });
+
+      },
+
+      {
+        threshold: 0.12
+      }
+    );
+
+  const observeLoop =
+    setInterval(() => {
+
+      const currentCards =
+        document.querySelectorAll(".card");
+
+      currentCards.forEach((card) => {
+
+        observer.observe(card);
+
+      });
+
+      if (currentCards.length) {
+
+        clearInterval(observeLoop);
+
+      }
+
+    }, 400);
+
+}
+
+/* =========================
+   AMBIENT MOVEMENT
+========================= */
+
+function initializeAmbientMovement() {
+
+  document.addEventListener(
+    "mousemove",
+    (event) => {
+
+      const x =
+        event.clientX / window.innerWidth;
+
+      const y =
+        event.clientY / window.innerHeight;
+
+      document.body.style.backgroundPosition =
+        `
+        ${x * 12}px
+        ${y * 12}px
+      `;
+
+    }
+  );
+
+}
+
+/* =========================
+   READING PROGRESS
+========================= */
+
+window.addEventListener(
+  "scroll",
+  () => {
+
+    const scrollTop =
+      window.scrollY;
+
+    const docHeight =
+      document.body.scrollHeight -
+      window.innerHeight;
+
+    const progress =
+      (scrollTop / docHeight) * 100;
+
+    document.documentElement.style.setProperty(
+      "--scroll-progress",
+      `${progress}%`
+    );
+
+  }
+);
+
+/* =========================
+   SMOOTH SCROLL TOP
+========================= */
+
+function scrollToTop() {
+
+  window.scrollTo({
+
+    top: 0,
+
+    behavior: "smooth"
+
+  });
+
+}
+
+/* =========================
+   CONSOLE BRANDING
+========================= */
+
+console.log(`
+
+WARD EXPERIENCES™
+Clinical Archive Engine v5
+
+Psychological Clinical Archive Loaded.
+
+`);
